@@ -1,8 +1,7 @@
-import comm_head       
+import comm_head
 import socket
+import messagehandler # TODO: remove
 
-# The list of connections
-gComm_Channels = []
 # The next port that will be used for commucation
 gNextCommPort = 4000
 
@@ -21,7 +20,7 @@ def Connect_User():
   sock.listen(5)
 
   # Wait for a request to accept
-  print("Waiting for connection")
+  print("Waiting for connection") # TODO: remove
   cont, addr = sock.accept()
 
   # Make the socket that will be used for chatting
@@ -35,16 +34,18 @@ def Connect_User():
       chat_sock.close()
       break
   
-  print ('Got connection from: ', addr, '\nPort choosen:', gNextCommPort)
-  # Tell the connecter the choosen port
+  print ('Got connection from: ', addr, '\nPort choosen:', gNextCommPort) # TODO: remove
+
+  # Tell the connecter the choosen port to connect back to
   cont.send(str(gNextCommPort).encode())
+  # Close the main line connection
   cont.close()
+
+  # Setup the comm channel on the choosen port
   Open_Comm_Channal(gNextCommPort)
 
 # Will setup the receiving end of a comm channal
 def Open_Comm_Channal(port):
-  # Get needed gobals
-  global gComm_Channels
 
   # Make the socket
   sock = socket.socket()
@@ -55,21 +56,14 @@ def Open_Comm_Channal(port):
   # Tell the socket to listen
   sock.listen(5)
 
+  # Set the timeout (low so it will go though the sockets quickly)
+  socket.setdefaulttimeout(.1)
+
   # Wait for a request to accept
-  print("Waiting for comm connection")
+  print("Waiting for comm connection") # TODO: remove
   cont, addr = sock.accept()
-  cont.send('CONNECTION MADE'.encode())
-  gComm_Channels.append(cont)
-  Receiver()
-
-def Receiver():
-  global gComm_Channels
-  print(gComm_Channels[0].recv(1024).decode())
-  gComm_Channels[0].send('Hi back'.encode())
-  Close_Comm_Channal()
-
-def Close_Comm_Channal():
-  global gComm_Channels
-  gComm_Channels.pop().close()
+  cont.send('CONNECTION MADE'.encode()) # TODO: remove
+  comm_head.gComm_Channels.append(cont)
+  messagehandler.Receiver()
 
 Connect_User()
