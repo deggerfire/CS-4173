@@ -17,8 +17,9 @@ def Receiver():
         # If there is a time out error we don't care
         except socket.timeout:
             pass
-    print(comm_head.gMessage_Buf_List)
-    print("---")
+
+    print(comm_head.gMessage_Buf_List) # TODO: remove
+    print("---") # TODO: remove
 
     Receiver() # TODO: 10/10 good code (aka kill asap)
 
