@@ -1,5 +1,6 @@
 from tkinter import *
 import start
+import room
 
 # Black - #191914
 # Dark grey - #24241E
@@ -11,7 +12,7 @@ import start
 def Create_Window():
     window = Tk()
     window.title('Vault Talk')
-    window.configure(bg='#191914', pady=40)
+    window.configure(bg='#191914', pady=30)
     window.geometry('896x704')
     window.minsize(width=896, height=704)
     window.iconphoto(True, icon := PhotoImage(file='ui/imgs/icon.png'))
@@ -20,6 +21,9 @@ def Create_Window():
 def Placeholder():
     pass
 
+instance = {}
+
 window = Create_Window()
-start.Start(window, Placeholder)
+# start.Start(window, Placeholder)
+room.Room(window, instance)
 window.mainloop()
