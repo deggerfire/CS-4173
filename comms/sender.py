@@ -34,7 +34,7 @@ def Connect(ip):
     print(sock2.recv(1024).decode()) # TODO: remove
 
     # Add the channel to the comm list
-    comm_head.gComm_Channels.append(sock2)
+    comm_head.gCommChannels.append(sock2)
 
     messagehandler.Message_Sim_DEBUG() # TODO: remove
 
