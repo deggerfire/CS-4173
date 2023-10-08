@@ -18,7 +18,7 @@ class Start:
         login_div = Frame(frame, bg='#191914', pady=10)
         username_label = Label(login_div, text='Username',font=('Lucida Sans', 20), bg='#191914', fg="#F2F2F2", pady=3)
         username = Entry(login_div, textvariable=self.username_var, width=50, font=('Lucida Sans', 16), bg="#24241E", border=0, fg="#F2F2F2")
-        ip_label = Label(login_div, text='IP',font=('Lucida Sans', 20), bg='#191914', fg="#F2F2F2", pady=3)
+        ip_label = Label(login_div, text='Room IP',font=('Lucida Sans', 20), bg='#191914', fg="#F2F2F2", pady=3)
         ip = Entry(login_div, textvariable=self.ip_var, width=50, font=('Lucida Sans', 16), bg="#24241E", border=0, fg="#F2F2F2")
         password_label = Label(login_div, text='Password', font=('Lucida Sans', 20), bg='#191914',fg="#F2F2F2", pady=3)
         password = Entry(login_div, textvariable=self.password_var, show="*", width=50,font=('Lucida Sans', 16), bg="#24241E", border=0, fg="#F2F2F2")

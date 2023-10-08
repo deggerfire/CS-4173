@@ -20,7 +20,6 @@ def Create_Window():
 
 def Placeholder():
     pass
-
 instance = {}
 
 window = Create_Window()
