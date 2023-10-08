@@ -37,7 +37,7 @@ def Message_Sim_DEBUG():
     Close_Comm_Channals()
 
 # Sends a message to all of the connections
-def Send_message(message):
+def Send_Message(message):
     print("Sending: ", message)
     for channel in comm_head.gComm_Channels:
         # Send the message and add on a NULL char at the end of the message
