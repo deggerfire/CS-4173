@@ -1,6 +1,9 @@
 import comm_head
 import socket
 import messagehandler # TODO: remove
+import thread
+
+#thread.start_new_thread(--method--,--vars--)
 
 # The next port that will be used for commucation
 gNextCommPort = 4000
