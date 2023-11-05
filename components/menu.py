@@ -1,10 +1,11 @@
 from tkinter import *
-import room
+from components import host_room, user_room
 
 
 class Menu:
-    def __init__(self, window):
+    def __init__(self, window, ngrok_url):
         self.window = window
+        self.ngrok_url = ngrok_url
         self.User_Type()
 
     def Kill_UI(self):
@@ -90,7 +91,7 @@ class Menu:
             activeforeground="#50FAB4",
             fg="#F2F2F2",
             activebackground="#191914",
-            command=lambda: room.Room(self.window, "HOST"),
+            command=lambda: host_room.Room(self.window, self.ngrok_url),
         )
         username_label.pack()
         username.pack()
@@ -159,7 +160,12 @@ class Menu:
             activeforeground="#50FAB4",
             fg="#F2F2F2",
             activebackground="#191914",
-            command=lambda: room.Room(self.window, "JOIN"),
+            command=lambda: user_room.Room(
+                self.window,
+                self.ngrok_url,
+                self.room_key_var.get(),
+                self.username_var.get(),
+            ),
         )
         username_label.pack()
         username.pack()

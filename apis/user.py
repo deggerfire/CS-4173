@@ -17,7 +17,7 @@ def newMessage():
 def newUser():
     # Save new user
 
-    # Response with success
+    # Respond with success
 
     return "new user"
 
