@@ -8,7 +8,8 @@ import requests
 class Room:
     def __init__(self, window, ngrok_url):
         self.window = window
-        room_key = "".join(ngrok_url[8:-15].split("-"))
+        room_key = ngrok_url[8:]
+        room_key = room_key.split(".")[0]
         self.Create_Room(window, room_key)
         self.model = host_room.Host_Room(ngrok_url, room_key)
         host_api_t = threading.Thread(target=lambda: host.Host_API(self.model, self))
