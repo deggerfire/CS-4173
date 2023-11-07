@@ -22,12 +22,12 @@ class Host_API:
             # AES Key
             aes_key = base64.b64encode(self.model.room_key.encode("utf-8"))
             aes = Fernet(aes_key)
-            print(data)
 
             # room_key||name||ngrok||public_key||
             decrypted_data = aes.decrypt(data).decode("utf-8").split("||")
+            print(decrypted_data)
 
-            if decrypted_data[0] != self.model.room_key or len(decrypted_data) != 4:
+            if decrypted_data[0] != self.model.ngrok_url or len(decrypted_data) != 4:
                 return jsonify({"data": "ERROR||ERROR"})
 
             # Save their public key / ngrok link /user name
