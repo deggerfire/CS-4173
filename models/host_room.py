@@ -5,9 +5,9 @@
 
 
 class Host_Room:
-    def __init__(self, ngrok_url, room_key):
+    def __init__(self, ngrok_url):
         self.ngrok_url = ngrok_url
-        self.room_key = room_key
+        self.room_key = ngrok_url[:32]
         self.users = []
         self.messages = []
 

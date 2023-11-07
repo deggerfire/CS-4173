@@ -9,28 +9,26 @@ import base64
 
 class Room:
     def __init__(self, window, ngrok_url, room_key, username):
-        def split_by_n(seq, n):
-            while seq:
-                yield seq[:n]
-                seq = seq[n:]
-
-        aes_key = base64.b64encode(room_key[:-4].encode("utf-8"))
+        aes_key = base64.b64encode(room_key[:32].encode("utf-8"))
         aes = Fernet(aes_key)
 
         req_str = room_key + "||" + username + "||" + ngrok_url + "||" + "123"
 
         encrypted_data = aes.encrypt(req_str.encode("utf-8"))
 
-        url = "https://" + split_by_n(room_key, 4) + ".ngrok-free.app"
+        def split_4(input_string):
+            return [input_string[i : i + 4] for i in range(0, len(input_string), 4)]
 
-        data = {"data": encrypted_data}
+        url = room_key + "/newUser"
+
+        data = {"data": encrypted_data.decode("utf-8")}
 
         response = requests.post(url, json=data)
         print(response)
 
         self.window = window
 
-        self.Create_Room(window, room_key)
+        self.Create_Room(window)
 
     def Kill_UI(self):
         for widget in self.window.winfo_children():

@@ -20,7 +20,7 @@ class Host_API:
             data = request.get_json()["data"]
 
             # AES Key
-            aes_key = base64.b64encode(self.model.room_key[:-4].encode("utf-8"))
+            aes_key = base64.b64encode(self.model.room_key.encode("utf-8"))
             aes = Fernet(aes_key)
             print(data)
 
@@ -47,9 +47,9 @@ class Host_API:
                     continue
                 res_str = user["name"] + "||" + user["public_key"]
 
-            decrypted_res = aes.encrypt(res_str.encode("utf-8"))
+            encrypted_res = aes.encrypt(res_str.encode("utf-8"))
 
-            return jsonify({"data": decrypted_res.decode("utf-8")})
+            return jsonify({"data": encrypted_res.decode("utf-8")})
 
         @app.route("/message", methods=["POST"])
         def New_Message():
