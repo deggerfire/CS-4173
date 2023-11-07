@@ -24,7 +24,17 @@ class Room:
         data = {"data": encrypted_data.decode("utf-8")}
 
         response = requests.post(url, json=data)
-        print(response)
+
+        if response.status_code != 200:
+            return
+
+        json = response.json()
+
+        if json["data"] == "ERROR||ERROR":
+            return
+
+        decrypted_data = aes.decrypt(json["data"]).decode("utf-8").split("||")
+        print(decrypted_data)
 
         self.window = window
 
