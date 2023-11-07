@@ -1,7 +1,7 @@
 from tkinter import *
 import threading
 from apis import host
-from models import host_room
+from models import user_room
 import requests
 from cryptography.fernet import Fernet
 import base64
@@ -15,9 +15,6 @@ class Room:
         req_str = room_key + "||" + username + "||" + ngrok_url + "||" + "123"
 
         encrypted_data = aes.encrypt(req_str.encode("utf-8"))
-
-        def split_4(input_string):
-            return [input_string[i : i + 4] for i in range(0, len(input_string), 4)]
 
         url = room_key + "/newUser"
 
@@ -33,10 +30,17 @@ class Room:
         if json["data"] == "ERROR||ERROR":
             return
 
-        decrypted_data = aes.decrypt(json["data"]).decode("utf-8").split("||")
-        print(decrypted_data)
+        decrypted_data = aes.decrypt(json["data"]).decode("utf-8").split("][")
+
+        users = []
+
+        for data in decrypted_data:
+            user = decrypted_data.split("||")
+            users.append({"name": user[0], "public_key": user[1]})
 
         self.window = window
+
+        self.model = user_room.Uost_Room(ngrok_url, users)
 
         self.Create_Room(window)
 

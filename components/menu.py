@@ -91,7 +91,9 @@ class Menu:
             activeforeground="#50FAB4",
             fg="#F2F2F2",
             activebackground="#191914",
-            command=lambda: host_room.Room(self.window, self.ngrok_url),
+            command=lambda: host_room.Room(
+                self.window, self.ngrok_url, self.username_var.get()
+            ),
         )
         username_label.pack()
         username.pack()

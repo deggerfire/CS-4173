@@ -37,17 +37,20 @@ class Host_API:
             for user in self.model.users:
                 if user["name"] == decrypted_data[1]:
                     continue
-                # SEND POST
+
+                data = {"data": decrypted_data[1] + "||" + decrypted_data[3]}
+
+                response = request.post(user["ngrok"] + "/newUser", json=data)
 
             # Respond with all current user names and public keys
-            res_str = ""
+            res_str = self.model.username + "||" "123" + "]["
             for user in self.model.users:
                 # Leave out new user of course
                 if user["name"] == decrypted_data[1]:
                     continue
-                res_str = user["name"] + "||" + user["public_key"]
+                res_str = res_str + user["name"] + "||" + user["public_key"] + "]["
 
-            encrypted_res = aes.encrypt(res_str.encode("utf-8"))
+            encrypted_res = aes.encrypt(res_str[:-3].encode("utf-8"))
 
             return jsonify({"data": encrypted_res.decode("utf-8")})
 

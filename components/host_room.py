@@ -6,10 +6,10 @@ import requests
 
 
 class Room:
-    def __init__(self, window, ngrok_url):
+    def __init__(self, window, ngrok_url, username):
         self.window = window
         self.Create_Room(window, ngrok_url)
-        self.model = host_room.Host_Room(ngrok_url)
+        self.model = host_room.Host_Room(ngrok_url, username)
         host_api_t = threading.Thread(target=lambda: host.Host_API(self.model, self))
         host_api_t.daemon = True
         host_api_t.start()

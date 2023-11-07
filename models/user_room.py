@@ -1,2 +1,5 @@
 class User_Room:
-    pass
+    def __init__(self, ngrok_url, users):
+        self.ngrok_url = ngrok_url
+        self.users = users
+        self.messages = []
