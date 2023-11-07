@@ -10,6 +10,7 @@ class Room:
         self.window = window
         room_key = ngrok_url[8:]
         room_key = room_key.split(".")[0]
+        room_key = "".join(room_key.split("-"))
         self.Create_Room(window, room_key)
         self.model = host_room.Host_Room(ngrok_url, room_key)
         host_api_t = threading.Thread(target=lambda: host.Host_API(self.model, self))
