@@ -146,7 +146,7 @@ class Menu:
         ngrok_url = Entry(
             login_div,
             textvariable=self.host_ngrok_url_var,
-            show="*",
+            # show="*",
             width=50,
             font=("Lucida Sans", 16),
             bg="#24241E",
@@ -165,7 +165,7 @@ class Menu:
         room_key = Entry(
             login_div,
             textvariable=self.room_key_var,
-            show="*",
+            # show="*",
             width=50,
             font=("Lucida Sans", 16),
             bg="#24241E",

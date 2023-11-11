@@ -51,6 +51,20 @@ class Room:
         )
         key["state"] = "disabled"
         key.pack()
+        url = Text(
+            frame,
+            fg="#F1F1F1",
+            bg="#191914",
+            font=("Lucida Sans", 14),
+            height=1,
+            border=0,
+        )
+        url.insert(
+            END,
+            "Room Url: " + ngrok_url,
+        )
+        url["state"] = "disabled"
+        url.pack()
         title = Label(
             frame,
             text="Chat Room",

@@ -11,17 +11,20 @@ import json
 
 class Room:
     def __init__(self, window, user_ngrok_url, host_ngrok_url, room_key, username):
-        aes_key = base64.b64encode(room_key.encode("utf-8"))
-        aes = Fernet(aes_key)
+        # AES setup
+        aes = Fernet(room_key)
 
+        # RSA setup
         rsa = RSA.generate(2048)
-        public_key = rsa.publickey()
+
+        # RSA public (PEM encoded)
+        public_key = rsa.publickey().export_key().decode("utf-8")
 
         data = {
             "room_key": room_key,
             "username": username,
             "ngrok_url": user_ngrok_url,
-            "public_key": public_key,
+            "public_key": public_key.export_key,
         }
 
         req_str = json.dumps(data)
