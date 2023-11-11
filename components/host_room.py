@@ -5,6 +5,7 @@ from models import host_room
 import requests
 from cryptography.fernet import Fernet
 from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
 
 
 class Room:
@@ -38,7 +39,8 @@ class Room:
             self.list.insert(END, "\n" + "You: " + message)
 
         else:
-            message = incomingMessage["message"]
+            cipher = PKCS1_OAEP.new(self.model.rsa)
+            message = cipher.decrypt(incomingMessage["message"])
             username = incomingMessage["name"]
             self.list.insert(END, "\n" + username + ": " + message)
 

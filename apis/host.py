@@ -70,9 +70,13 @@ class Host_API:
 
             data = request.get_json()
 
-            self.controller.Render_Message(data)
-
             # Send message out to other users
+            for key, value in data.messages:
+                # keep the host encrypted message for host
+                if key == self.model.username:
+                    self.controller.Render_Message(
+                        {"name": data["name"], "message": value}
+                    )
 
             return "New message"
 

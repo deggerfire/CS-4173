@@ -12,6 +12,8 @@ import json
 
 class Room:
     def __init__(self, window, user_ngrok_url, host_ngrok_url, room_key, username):
+        self.window = window
+
         # AES setup
         aes = Fernet(room_key)
 
@@ -67,13 +69,27 @@ class Room:
             widget.destroy()
 
     def Send_Message(self, message):
-        data = {}
+        messages = {}
 
         for user in self.model.users:
             public_key = RSA.import_key(user["public_key"])
             cipher = PKCS1_OAEP.new(public_key)
-            data[user["name"]] = cipher.encrypt(message.encode("utf-8"))
+            messages[user["name"]] = cipher.encrypt(message.encode("utf-8")).decode(
+                "utf-8", "ignore"
+            )
+
+        data = {"name": self.model.username, "messages": messages}
         print(data)
+
+        url = self.model.host_ngrok_url = "/message"
+
+        response = requests.post(url, json=data)
+
+        print(response)
+        print("Status: ", response.status_code)
+
+        if response.status_code != 200:
+            self.window.quit().destroy()
 
     def Render_Message(self, incomingMessage):
         self.list["state"] = "normal"
