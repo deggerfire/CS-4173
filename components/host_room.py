@@ -39,6 +39,7 @@ class Room:
             self.list.insert(END, "\n" + "You: " + message)
 
         else:
+            print(incomingMessage)
             cipher = PKCS1_OAEP.new(self.model.rsa)
             message = cipher.decrypt(incomingMessage["message"].encode("utf-8")).decode(
                 "utf-8", "ignore"
