@@ -145,7 +145,7 @@ class Menu:
         )
         ngrok_url = Entry(
             login_div,
-            textvariable=self.ngrok_url_var,
+            textvariable=self.host_ngrok_url_var,
             show="*",
             width=50,
             font=("Lucida Sans", 16),
