@@ -74,9 +74,9 @@ class Room:
         for user in self.model.users:
             public_key = RSA.import_key(user["public_key"])
             cipher = PKCS1_OAEP.new(public_key)
-            messages[user["name"]] = cipher.encrypt(message.encode("utf-8")).decode(
-                "utf-8"
-            )
+            messages[user["name"]] = base64.b64encode(
+                cipher.encrypt(message.encode("utf-8"))
+            ).decode("utf-8")
 
         data = {"name": self.model.username, "messages": messages}
         print(data)

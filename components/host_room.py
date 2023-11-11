@@ -6,6 +6,7 @@ import requests
 from cryptography.fernet import Fernet
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
+import base64
 
 
 class Room:
@@ -41,9 +42,9 @@ class Room:
         else:
             print(incomingMessage)
             cipher = PKCS1_OAEP.new(self.model.rsa)
-            message = cipher.decrypt(incomingMessage["message"].encode("utf-8")).decode(
-                "utf-8"
-            )
+            message = cipher.decrypt(
+                base64.b64decode((incomingMessage["message"].encode("utf-8")))
+            ).decode("utf-8")
             username = incomingMessage["name"]
             self.list.insert(END, "\n" + username + ": " + message)
 
