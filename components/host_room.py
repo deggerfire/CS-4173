@@ -44,6 +44,7 @@ class Room:
             print(data)
 
             url = user["ngrok"] + "/newMessage"
+            print(url)
 
             response = requests.post(url, json=data)
 
