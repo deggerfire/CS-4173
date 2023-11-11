@@ -18,9 +18,12 @@ class User_API:
     def Set_Routes(self):
         @app.route("/newMessage")
         def newMessage():
-            # Save message
+            data = request.get_json()
 
-            print(request)
+            self.controller.Render_Message(
+                {"name": data["name"], "message": data["message"]}
+            )
+
             return "Success"
 
         @app.route("/newUser")

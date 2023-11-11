@@ -91,7 +91,17 @@ class Host_API:
                     self.controller.Render_Message(
                         {"name": data["name"], "message": value}
                     )
+                    continue
                 # Send message to user
+
+                forwarded_data = {"name": data["name"], "message": value}
+
+                response = request.post(
+                    self.model.users[key]["ngrok"] + "/newUser", json=forwarded_data
+                )
+
+                if response.status_code != 200:
+                    print("MESSAGE NOT SENT TO: " + self.model.users[key]["name"])
 
             return "Success"
 

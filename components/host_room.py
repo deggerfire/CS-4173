@@ -32,10 +32,29 @@ class Room:
         for widget in self.window.winfo_children():
             widget.destroy()
 
+    def Send_Message(self, message):
+        for user in self.model.users:
+            public_key = RSA.import_key(user["public_key"])
+            cipher = PKCS1_OAEP.new(public_key)
+            messasge = base64.b64encode(cipher.encrypt(message.encode("utf-8"))).decode(
+                "utf-8"
+            )
+
+            data = {"name": self.model.username, "message": message}
+            print(data)
+
+            url = user["ngrok"] + "/newMessage"
+
+            response = requests.post(url, json=data)
+
+            if response.status_code != 200:
+                self.window.quit().destroy()
+
     def Render_Message(self, incomingMessage):
         self.list["state"] = "normal"
         if incomingMessage == None:
             message = self.input.get("1.0", "end").strip()
+            self.Send_Message(message)
             self.input.replace("1.0", "end", "")
             self.list.insert(END, "\n" + "You: " + message)
 
