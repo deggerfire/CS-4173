@@ -52,7 +52,7 @@ class Host_API:
             data = {}
             for user in self.model.users:
                 # Leave out new user of course
-                if user["name"] == decrypted_data["name"]:
+                if user["name"] == decrypted_data["username"]:
                     continue
                 data[user["name"]] = user["public_key"]
 
