@@ -38,12 +38,15 @@ class Host_API:
 
             # Send out new public key / name to other users
             for user in self.model.users:
-                if user["name"] == decrypted_data[1]:
+                if user["name"] == decrypted_data["username"]:
                     continue
 
-                data = {"data": decrypted_data[1] + "||" + decrypted_data[3]}
+                data = {
+                    "name": decrypted_data["username"],
+                    "public_key": decrypted_data["public_key"],
+                }
 
-                response = request.post(user["ngrok"] + "/newUser", json=data)
+                # response = request.post(user["ngrok"] + "/newUser", json=data)
 
             # Respond with all current user names and public keys
             data = {}
