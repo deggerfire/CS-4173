@@ -26,11 +26,15 @@ class Host_API:
             decrypted_data = json.loads(aes.decrypt(data).decode("utf-8"))
             print(decrypted_data)
 
-            if decrypted_data["room_key"] != self.model.room_key:
+            if decrypted_data["room_key"] != self.model.room_key.decode("utf-8"):
                 return jsonify({"data": ":("})
 
             # Save their public key / ngrok link /user name
-            self.model.Add_User(decrypted_data[1], decrypted_data[2], decrypted_data[3])
+            self.model.Add_User(
+                decrypted_data["public_key"],
+                decrypted_data["ngrok_url"],
+                decrypted_data["username"],
+            )
 
             # Send out new public key / name to other users
             for user in self.model.users:

@@ -24,7 +24,7 @@ class Room:
             "room_key": room_key,
             "username": username,
             "ngrok_url": user_ngrok_url,
-            "public_key": public_key.export_key,
+            "public_key": public_key,
         }
 
         req_str = json.dumps(data)
@@ -41,6 +41,8 @@ class Room:
             return
 
         res_json = response.json()
+
+        print(res_json)
 
         if res_json["data"] == ":(":
             return
