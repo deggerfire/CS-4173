@@ -3,13 +3,15 @@ import threading
 from apis import host
 from models import host_room
 import requests
+from cryptography.fernet import Fernet
 
 
 class Room:
     def __init__(self, window, ngrok_url, username):
         self.window = window
-        self.Create_Room(window, ngrok_url)
-        self.model = host_room.Host_Room(ngrok_url, username)
+        room_key = Fernet.generate_key()
+        self.Create_Room(window, ngrok_url, room_key)
+        self.model = host_room.Host_Room(ngrok_url, username, room_key)
         host_api_t = threading.Thread(target=lambda: host.Host_API(self.model, self))
         host_api_t.daemon = True
         host_api_t.start()
@@ -32,7 +34,7 @@ class Room:
 
         self.list["state"] = "disabled"
 
-    def Create_Room(self, window, ngrok_url):
+    def Create_Room(self, window, ngrok_url, room_key):
         self.Kill_UI()
         frame = Frame(window, bg="#191914", pady=15, padx=15)
         key = Text(
@@ -45,7 +47,7 @@ class Room:
         )
         key.insert(
             END,
-            "Room Key: " + ngrok_url,
+            "Room Key: " + room_key.decode("utf-8"),
         )
         key["state"] = "disabled"
         key.pack()

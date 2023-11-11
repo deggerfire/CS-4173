@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from cryptography.fernet import Fernet
 import base64
 import requests
+import json
 
 app = Flask(__name__)
 
@@ -20,15 +21,13 @@ class Host_API:
             data = request.get_json()["data"]
 
             # AES Key
-            aes_key = base64.b64encode(self.model.room_key.encode("utf-8"))
-            aes = Fernet(aes_key)
+            aes = Fernet(self.model.room_key)
 
-            # room_key||name||ngrok||public_key||
-            decrypted_data = aes.decrypt(data).decode("utf-8").split("||")
+            decrypted_data = json.loads(aes.decrypt(data).decode("utf-8"))
             print(decrypted_data)
 
-            if decrypted_data[0] != self.model.ngrok_url or len(decrypted_data) != 4:
-                return jsonify({"data": "ERROR||ERROR"})
+            if decrypted_data["room_key"] != self.model.room_key:
+                return jsonify({"data": ":("})
 
             # Save their public key / ngrok link /user name
             self.model.Add_User(decrypted_data[1], decrypted_data[2], decrypted_data[3])
@@ -43,14 +42,14 @@ class Host_API:
                 response = request.post(user["ngrok"] + "/newUser", json=data)
 
             # Respond with all current user names and public keys
-            res_str = self.model.username + "||" "123" + "]["
+            data = {}
             for user in self.model.users:
                 # Leave out new user of course
-                if user["name"] == decrypted_data[1]:
+                if user["name"] == decrypted_data["name"]:
                     continue
-                res_str = res_str + user["name"] + "||" + user["public_key"] + "]["
+                data[user["name"]] = user["public_key"]
 
-            encrypted_res = aes.encrypt(res_str[:-3].encode("utf-8"))
+            encrypted_res = aes.encrypt(json.dumps(data).encode("utf-8"))
 
             return jsonify({"data": encrypted_res.decode("utf-8")})
 

@@ -1,22 +1,34 @@
 from tkinter import *
 import threading
-from apis import host
+from apis import user
 from models import user_room
 import requests
 from cryptography.fernet import Fernet
+from Crypto.PublicKey import RSA
 import base64
+import json
 
 
 class Room:
-    def __init__(self, window, ngrok_url, room_key, username):
-        aes_key = base64.b64encode(room_key[:32].encode("utf-8"))
+    def __init__(self, window, user_ngrok_url, host_ngrok_url, room_key, username):
+        aes_key = base64.b64encode(room_key.encode("utf-8"))
         aes = Fernet(aes_key)
 
-        req_str = room_key + "||" + username + "||" + ngrok_url + "||" + "123"
+        rsa = RSA.generate(2048)
+        public_key = rsa.publickey()
+
+        data = {
+            "room_key": room_key,
+            "username": username,
+            "ngrok_url": user_ngrok_url,
+            "public_key": public_key,
+        }
+
+        req_str = json.dumps(data)
 
         encrypted_data = aes.encrypt(req_str.encode("utf-8"))
 
-        url = room_key + "/newUser"
+        url = host_ngrok_url + "/newUser"
 
         data = {"data": encrypted_data.decode("utf-8")}
 
@@ -25,22 +37,24 @@ class Room:
         if response.status_code != 200:
             return
 
-        json = response.json()
+        res_json = response.json()
 
-        if json["data"] == "ERROR||ERROR":
+        if res_json["data"] == ":(":
             return
 
-        decrypted_data = aes.decrypt(json["data"]).decode("utf-8").split("][")
+        decrypted_data = json.loads(aes.decrypt(res_json["data"]).decode("utf-8"))
+        print(decrypted_data)
 
         users = []
 
-        for data in decrypted_data:
-            user = decrypted_data.split("||")
-            users.append({"name": user[0], "public_key": user[1]})
+        for key, value in decrypted_data.items():
+            users.append({"name": key, "public_key": value})
 
         self.window = window
 
-        self.model = user_room.Uost_Room(ngrok_url, users)
+        self.model = user_room.Host_Room(
+            user_ngrok_url, host_ngrok_url, username, users, rsa
+        )
 
         self.Create_Room(window)
 

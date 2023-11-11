@@ -106,6 +106,7 @@ class Menu:
         self.Kill_UI()
         self.username_var = StringVar()
         self.room_key_var = StringVar()
+        self.host_ngrok_url_var = StringVar()
         frame = Frame(self.window, bg="#191914", pady=20, padx=20)
         title = Label(
             frame,
@@ -128,6 +129,24 @@ class Menu:
         username = Entry(
             login_div,
             textvariable=self.username_var,
+            width=50,
+            font=("Lucida Sans", 16),
+            bg="#24241E",
+            border=0,
+            fg="#F2F2F2",
+        )
+        ngrok_url_label = Label(
+            login_div,
+            text="Room Url",
+            font=("Lucida Sans", 20),
+            bg="#191914",
+            fg="#F2F2F2",
+            pady=3,
+        )
+        ngrok_url = Entry(
+            login_div,
+            textvariable=self.ngrok_url_var,
+            show="*",
             width=50,
             font=("Lucida Sans", 16),
             bg="#24241E",
@@ -165,12 +184,15 @@ class Menu:
             command=lambda: user_room.Room(
                 self.window,
                 self.ngrok_url,
+                self.host_ngrok_url_var.get(),
                 self.room_key_var.get(),
                 self.username_var.get(),
             ),
         )
         username_label.pack()
         username.pack()
+        ngrok_url_label.pack()
+        ngrok_url.pack()
         room_key_label.pack()
         room_key.pack()
         title.pack()
