@@ -42,7 +42,7 @@ class Room:
             print(incomingMessage)
             cipher = PKCS1_OAEP.new(self.model.rsa)
             message = cipher.decrypt(incomingMessage["message"].encode("utf-8")).decode(
-                "utf-8", "ignore"
+                "utf-8"
             )
             username = incomingMessage["name"]
             self.list.insert(END, "\n" + username + ": " + message)

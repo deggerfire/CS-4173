@@ -75,7 +75,7 @@ class Room:
             public_key = RSA.import_key(user["public_key"])
             cipher = PKCS1_OAEP.new(public_key)
             messages[user["name"]] = cipher.encrypt(message.encode("utf-8")).decode(
-                "utf-8", "ignore"
+                "utf-8"
             )
 
         data = {"name": self.model.username, "messages": messages}
