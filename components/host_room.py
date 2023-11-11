@@ -4,14 +4,24 @@ from apis import host
 from models import host_room
 import requests
 from cryptography.fernet import Fernet
+from Crypto.PublicKey import RSA
 
 
 class Room:
     def __init__(self, window, ngrok_url, username):
         self.window = window
+
         room_key = Fernet.generate_key()
-        self.Create_Room(window, ngrok_url, room_key)
-        self.model = host_room.Host_Room(ngrok_url, username, room_key)
+        rsa = RSA.generate(2048)
+
+        self.Create_Room(
+            window,
+            ngrok_url,
+            room_key,
+        )
+
+        self.model = host_room.Host_Room(ngrok_url, username, room_key, rsa)
+
         host_api_t = threading.Thread(target=lambda: host.Host_API(self.model, self))
         host_api_t.daemon = True
         host_api_t.start()

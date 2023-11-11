@@ -49,7 +49,11 @@ class Host_API:
                 # response = request.post(user["ngrok"] + "/newUser", json=data)
 
             # Respond with all current user names and public keys
-            data = {}
+            data = {
+                self.model.username: self.model.rsa.publickey()
+                .export_key()
+                .decode("utf-8")
+            }
             for user in self.model.users:
                 # Leave out new user of course
                 if user["name"] == decrypted_data["username"]:

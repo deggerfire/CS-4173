@@ -5,6 +5,7 @@ from models import user_room
 import requests
 from cryptography.fernet import Fernet
 from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
 import base64
 import json
 
@@ -42,8 +43,6 @@ class Room:
 
         res_json = response.json()
 
-        print(res_json)
-
         if res_json["data"] == ":(":
             return
 
@@ -57,7 +56,7 @@ class Room:
 
         self.window = window
 
-        self.model = user_room.Host_Room(
+        self.model = user_room.User_Room(
             user_ngrok_url, host_ngrok_url, username, users, rsa
         )
 
@@ -67,10 +66,20 @@ class Room:
         for widget in self.window.winfo_children():
             widget.destroy()
 
+    def Send_Message(self, message):
+        data = {}
+
+        for user in self.model.users:
+            public_key = RSA.import_key(user["public_key"])
+            cipher = PKCS1_OAEP.new(public_key)
+            data[user["name"]] = cipher.encrypt(message.encode("utf-8"))
+        print(data)
+
     def Render_Message(self, incomingMessage):
         self.list["state"] = "normal"
         if incomingMessage == None:
             message = self.input.get("1.0", "end").strip()
+            self.Send_Message(message)
             self.input.replace("1.0", "end", "")
             self.list.insert(END, "\n" + "You: " + message)
 
