@@ -70,6 +70,10 @@ class Host_API:
 
             data = request.get_json()
 
+            print("---------------------------------------------------")
+            print(data)
+            print("---------------------------------------------------")
+
             # Send message out to other users
             for key, value in data["messages"].items():
                 # keep the host encrypted message for host
