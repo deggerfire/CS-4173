@@ -16,7 +16,7 @@ class User_API:
         self.run()
 
     def Set_Routes(self):
-        @app.route("/newMessage")
+        @app.route("/newMessage", methods=["POST"])
         def newMessage():
             data = request.get_json()
 
@@ -26,9 +26,10 @@ class User_API:
 
             return "Success"
 
-        @app.route("/newUser")
+        @app.route("/newUser", methods=["POST"])
         def newUser():
             data = request.get_json()["data"]
+            print(data)
 
             # Save new user
             cipher = PKCS1_OAEP.new(self.model.rsa)
