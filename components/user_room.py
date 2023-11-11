@@ -56,13 +56,15 @@ class Room:
         for key, value in decrypted_data.items():
             users.append({"name": key, "public_key": value})
 
-        self.window = window
-
         self.model = user_room.User_Room(
             user_ngrok_url, host_ngrok_url, username, users, rsa
         )
 
         self.Create_Room(window)
+
+        user_api_t = threading.Thread(target=lambda: user.User_API(self.model, self))
+        user_api_t.daemon = True
+        user_api_t.start()
 
     def Kill_UI(self):
         for widget in self.window.winfo_children():

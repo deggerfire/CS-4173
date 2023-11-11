@@ -36,7 +36,7 @@ class Room:
         for user in self.model.users:
             public_key = RSA.import_key(user["public_key"])
             cipher = PKCS1_OAEP.new(public_key)
-            messasge = base64.b64encode(cipher.encrypt(message.encode("utf-8"))).decode(
+            message = base64.b64encode(cipher.encrypt(message.encode("utf-8"))).decode(
                 "utf-8"
             )
 
