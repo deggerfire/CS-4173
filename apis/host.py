@@ -73,7 +73,7 @@ class Host_API:
             # Send message out to other users
             for key, value in data.messages:
                 # keep the host encrypted message for host
-                if key == self.model.username:
+                if key == self.model.username.items():
                     self.controller.Render_Message(
                         {"name": data["name"], "message": value}
                     )

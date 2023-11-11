@@ -81,7 +81,7 @@ class Room:
         data = {"name": self.model.username, "messages": messages}
         print(data)
 
-        url = self.model.host_ngrok_url = "/message"
+        url = self.model.host_ngrok_url + "/message"
 
         response = requests.post(url, json=data)
 
