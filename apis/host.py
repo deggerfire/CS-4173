@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 from cryptography.fernet import Fernet
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto.PublicKey import RSA
 import base64
 import requests
 import json
@@ -41,12 +43,26 @@ class Host_API:
                 if user["name"] == decrypted_data["username"]:
                     continue
 
-                data = {
+                user_info = {
                     "name": decrypted_data["username"],
                     "public_key": decrypted_data["public_key"],
                 }
 
-                # response = request.post(user["ngrok"] + "/newUser", json=data)
+                user_info_str = json.dumps(user_info)
+
+                public_key = RSA.import_key(user["public_key"])
+                cipher = PKCS1_OAEP.new(public_key)
+
+                data = {
+                    "data": base64.b64encode(
+                        cipher.encrypt(user_info_str.encode("utf-8"))
+                    ).decode("utf-8")
+                }
+
+                response = request.post(user["ngrok"] + "/newUser", json=data)
+
+                if response.status_code != 200:
+                    print("ERROR SENDING NEW USER INFO TO CURRENT USERS")
 
             # Respond with all current user names and public keys
             data = {
@@ -77,7 +93,7 @@ class Host_API:
                     )
                 # Send message to user
 
-            return "New message"
+            return "Success"
 
         @app.route("/disconnect")
         def Disconnect_User():

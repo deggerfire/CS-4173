@@ -6,3 +6,6 @@ class User_Room:
         self.messages = []
         self.username = username
         self.rsa = rsa
+
+    def Add_User(self, name, public_key):
+        self.users.append({"name": name, "public_key": public_key})

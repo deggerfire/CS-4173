@@ -1,26 +1,41 @@
 from flask import Flask, request
+import base64
+import requests
+import json
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
 
 app = Flask(__name__)
 
 
-@app.route("/newMessage")
-def newMessage():
-    # Save message
+class User_API:
+    def __init__(self, model, controller):
+        self.model = model
+        self.controller = controller
+        self.Set_Routes()
+        self.run()
 
-    # Respond with success
+    def Set_Routes(self):
+        @app.route("/newMessage")
+        def newMessage():
+            # Save message
 
-    print(request)
-    return "Hello, World!"
+            print(request)
+            return "Success"
 
+        @app.route("/newUser")
+        def newUser():
+            data = request.get_json()["data"]
 
-@app.route("/newUser")
-def newUser():
-    # Save new user
+            # Save new user
+            cipher = PKCS1_OAEP.new(self.model.rsa)
+            new_user = json.loads(
+                cipher.decrypt(base64.b64decode((data.encode("utf-8")))).decode("utf-8")
+            )
 
-    # Respond with success
+            self.model.Add_User(new_user["name"], new_user["public_key"])
 
-    return "new user"
+            return "Success"
 
-
-def run(room):
-    app.run(debug=True, port=3000)
+    def run(self):
+        app.run(debug=True, port=5173, use_reloader=False)
