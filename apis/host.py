@@ -66,13 +66,7 @@ class Host_API:
 
         @app.route("/message", methods=["POST"])
         def New_Message():
-            # Decrypt message, save for host
-
             data = request.get_json()
-
-            print("---------------------------------------------------")
-            print(data)
-            print("---------------------------------------------------")
 
             # Send message out to other users
             for key, value in data["messages"].items():
@@ -81,6 +75,7 @@ class Host_API:
                     self.controller.Render_Message(
                         {"name": data["name"], "message": value}
                     )
+                # Send message to user
 
             return "New message"
 

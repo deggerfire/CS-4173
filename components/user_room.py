@@ -85,9 +85,6 @@ class Room:
 
         response = requests.post(url, json=data)
 
-        print(response)
-        print("Status: ", response.status_code)
-
         if response.status_code != 200:
             self.window.quit().destroy()
 
