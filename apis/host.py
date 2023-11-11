@@ -31,9 +31,9 @@ class Host_API:
 
             # Save their public key / ngrok link /user name
             self.model.Add_User(
-                decrypted_data["public_key"],
-                decrypted_data["ngrok_url"],
                 decrypted_data["username"],
+                decrypted_data["ngrok_url"],
+                decrypted_data["public_key"],
             )
 
             # Send out new public key / name to other users
