@@ -48,7 +48,7 @@ class Room:
             response = requests.post(url, json=data)
 
             if response.status_code != 200:
-                self.window.quit().destroy()
+                print("FAILED TO SEND MESSAGE TO: " + user["name"])
 
     def Render_Message(self, incomingMessage):
         self.list["state"] = "normal"
