@@ -40,6 +40,7 @@ class Room:
 
         else:
             cipher = PKCS1_OAEP.new(self.model.rsa)
+            print(incomingMessage["message"])
             message = cipher.decrypt(incomingMessage["message"])
             username = incomingMessage["name"]
             self.list.insert(END, "\n" + username + ": " + message)
