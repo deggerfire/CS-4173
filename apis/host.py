@@ -8,7 +8,7 @@ import json
 
 app = Flask(__name__)
 
-
+# The API for a host room which handles encoding and moving messages around
 class Host_API:
     def __init__(self, model, controller):
         self.model = model
@@ -18,47 +18,57 @@ class Host_API:
 
     def Set_Routes(self):
         @app.route("/newUser", methods=["POST"])
+        # Checks and adds a new user to the room
         def New_User():
             # Verify user
             data = request.get_json()["data"]
 
-            # AES Key
+            # Get the AES Key
             aes = Fernet(self.model.room_key)
 
+            # Decrypted the inbound message and convert it to json 
             decrypted_data = json.loads(aes.decrypt(data).decode("utf-8"))
-            print(decrypted_data)
+            print(decrypted_data)# TODO: print out for debugging
 
+            # Check if the room_key in the inbound message is correct
+            # TODO: issue when the inbound message is invalid (its not valid json)
             if decrypted_data["room_key"] != self.model.room_key.decode("utf-8"):
                 return jsonify({"data": ":("})
 
-            # Save their public key / ngrok link /user name
+            # Save the new users information
             self.model.Add_User(
                 decrypted_data["username"],
                 decrypted_data["ngrok_url"],
                 decrypted_data["public_key"],
             )
 
-            # Send out new public key / name to other users
+            # Send out new users information to other users
             for user in self.model.users:
+                # Skip the host user
                 if user["name"] == decrypted_data["username"]:
                     continue
-
+                
+                # Get the new user info (name, public key)
                 user_info = {
                     "name": decrypted_data["username"],
                     "public_key": decrypted_data["public_key"],
                 }
 
+                # Convert the new user info to a json string
                 user_info_str = json.dumps(user_info)
 
+                # Get and load the public key
                 public_key = RSA.import_key(user["public_key"])
                 cipher = PKCS1_OAEP.new(public_key)
 
+                # Encrypt the data
                 data = {
                     "data": base64.b64encode(
                         cipher.encrypt(user_info_str.encode("utf-8"))
                     ).decode("utf-8")
                 }
 
+                # Send the encrypted user info
                 response = request.post(user["ngrok"] + "/newUser", json=data)
 
                 if response.status_code != 200:
@@ -76,11 +86,14 @@ class Host_API:
                     continue
                 data[user["name"]] = user["public_key"]
 
+            # Encrypt the message
             encrypted_res = aes.encrypt(json.dumps(data).encode("utf-8"))
 
             return jsonify({"data": encrypted_res.decode("utf-8")})
 
         @app.route("/message", methods=["POST"])
+        # Sends a message to all users in the chat room
+        # TODO: error when two users send a message at the same time
         def New_Message():
             data = request.get_json()
 
@@ -106,6 +119,8 @@ class Host_API:
             return "Success"
 
         @app.route("/disconnect")
+        # Disconnects a user the from the chat
+        # TODO: dew it
         def Disconnect_User():
             # Determine which user
 

@@ -1,17 +1,19 @@
 from tkinter import *
 from components import host_room, user_room
 
-
+# The objects that are in the window
 class Menu:
     def __init__(self, window, ngrok_url):
         self.window = window
         self.ngrok_url = ngrok_url
         self.User_Type()
 
+    # Deletes all the content in the window
     def Kill_UI(self):
         for widget in self.window.winfo_children():
             widget.destroy()
 
+    # The GUI for selecting being a user or a host
     def User_Type(self):
         self.Kill_UI
         frame = Frame(self.window, bg="#191914", pady=20, padx=20)
@@ -51,6 +53,7 @@ class Menu:
         join_btn.pack()
         frame.pack()
 
+    # The GUI for making a chat room as a host
     def Host_Menu(self):
         self.Kill_UI()
         self.username_var = StringVar()
@@ -102,6 +105,7 @@ class Menu:
         start_btn.pack()
         frame.pack()
 
+    # The GUI for joining a chat room
     def Join_Menu(self):
         self.Kill_UI()
         self.username_var = StringVar()

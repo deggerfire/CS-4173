@@ -8,30 +8,38 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 import base64
 
-
+# The object with mainly the GUI components for a room host
 class Room:
     def __init__(self, window, ngrok_url, username):
         self.window = window
 
+        # TODO: make this based off of a user entered password
+        # Using the fernet libary gererate a room key
         room_key = Fernet.generate_key()
+        # Generates a RSA key pair of 2048 bits long
         rsa = RSA.generate(2048)
 
+        # Create the GUI for the room
         self.Create_Room(
             window,
             ngrok_url,
             room_key,
         )
 
+        # Setup the host room object
         self.model = host_room.Host_Room(ngrok_url, username, room_key, rsa)
 
+        # Start a thread for the host api
         host_api_t = threading.Thread(target=lambda: host.Host_API(self.model, self))
         host_api_t.daemon = True
         host_api_t.start()
 
+    # Clear the GUI
     def Kill_UI(self):
         for widget in self.window.winfo_children():
             widget.destroy()
 
+    # Sends messages to all chatters
     def Send_Message(self, message):
         for user in self.model.users:
             public_key = RSA.import_key(user["public_key"])
@@ -51,6 +59,7 @@ class Room:
             if response.status_code != 200:
                 print("FAILED TO SEND MESSAGE TO: " + user["name"])
 
+    # Prints out the messages
     def Render_Message(self, incomingMessage):
         self.list["state"] = "normal"
         if incomingMessage == None:
@@ -70,6 +79,7 @@ class Room:
 
         self.list["state"] = "disabled"
 
+    # Setups the GUI for being in a chat room as a host
     def Create_Room(self, window, ngrok_url, room_key):
         self.Kill_UI()
         frame = Frame(window, bg="#191914", pady=15, padx=15)
