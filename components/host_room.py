@@ -40,27 +40,33 @@ class Room:
             widget.destroy()
 
     # Sends messages to all chatters
+    # TODO: some double coding between this and the one in user_room (comp) and new_message in host.py
     def Send_Message(self, message):
         for user in self.model.users:
+            # Encode the message using each chatters public key
             public_key = RSA.import_key(user["public_key"])
             cipher = PKCS1_OAEP.new(public_key)
             message = base64.b64encode(cipher.encrypt(message.encode("utf-8"))).decode(
                 "utf-8"
             )
 
+            # Put the data in a JSON
             data = {"name": self.model.username, "message": message}
-            print(data)
+            print(data)# TODO: debug print
 
+            # Send the message to the respective user
             url = user["ngrok"] + "/newMessage"
-            print(url)
-
+            print(url)# TODO: debug print
             response = requests.post(url, json=data)
 
+            # Error check
             if response.status_code != 200:
                 print("FAILED TO SEND MESSAGE TO: " + user["name"])
 
     # Prints out the messages
+    # TODO: some double coding between this and the one in user_room (comp)
     def Render_Message(self, incomingMessage):
+        # Error check
         self.list["state"] = "normal"
         if incomingMessage == None:
             message = self.input.get("1.0", "end").strip()
@@ -68,6 +74,7 @@ class Room:
             self.input.replace("1.0", "end", "")
             self.list.insert(END, "\n" + "You: " + message)
 
+        # Add the message
         else:
             print(incomingMessage)
             cipher = PKCS1_OAEP.new(self.model.rsa)
@@ -80,6 +87,7 @@ class Room:
         self.list["state"] = "disabled"
 
     # Setups the GUI for being in a chat room as a host
+    # TODO: some double coding between this and the one in user_room (comp)
     def Create_Room(self, window, ngrok_url, room_key):
         self.Kill_UI()
         frame = Frame(window, bg="#191914", pady=15, padx=15)

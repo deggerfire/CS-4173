@@ -51,7 +51,7 @@ class Room:
             return
 
         # Convert what the server sent to JSON
-        # TODO: check for valid JSON
+        # TODO: check for valid JSON (invaild means invaild user)
         res_json = response.json()
 
         # Make sure this is data
@@ -63,46 +63,60 @@ class Room:
         print(decrypted_data)
 
         # Make and store all of the users and their information
-        # TODO: error here when there is to many users
+        # TODO: error when there is to many users
         users = []
         for key, value in decrypted_data.items():
             users.append({"name": key, "public_key": value})
 
+        # Makes the user_room object used to keep track of users (the user_room in models)
+        # TODO: rename user_room in models, bit confusing when reading
         self.model = user_room.User_Room(
             user_ngrok_url, host_ngrok_url, username, users, rsa
         )
 
+        # Start the GUI
         self.Create_Room(window)
 
+        # Start a thread that handles communication
         user_api_t = threading.Thread(target=lambda: user.User_API(self.model, self))
         user_api_t.daemon = True
         user_api_t.start()
 
+    # Clears the GUI
     def Kill_UI(self):
         for widget in self.window.winfo_children():
             widget.destroy()
 
+    # Sends a message to the other users
     def Send_Message(self, message):
+        # JSON array to keep track of the messages
         messages = {}
 
+        # Loop though all the users
         for user in self.model.users:
+            # Encode the message using the other users public key
             public_key = RSA.import_key(user["public_key"])
             cipher = PKCS1_OAEP.new(public_key)
             messages[user["name"]] = base64.b64encode(
                 cipher.encrypt(message.encode("utf-8"))
             ).decode("utf-8")
 
+        # Put the message in JSON
+        # TODO: string and encode the JSON
         data = {"name": self.model.username, "messages": messages}
-        print(data)
+        print(data)# TODO: debug print
 
+        # Sent the message to the host who sends it to everyone
         url = self.model.host_ngrok_url + "/message"
-
         response = requests.post(url, json=data)
 
+        # Error check
         if response.status_code != 200:
             self.window.quit().destroy()
 
+    # Prints the messages on the screen
     def Render_Message(self, incomingMessage):
+        # Error check the message
         self.list["state"] = "normal"
         if incomingMessage == None:
             message = self.input.get("1.0", "end").strip()
@@ -111,16 +125,21 @@ class Room:
             self.list.insert(END, "\n" + "You: " + message)
 
         else:
-            print(incomingMessage)
+            print(incomingMessage)# TODO: debug print
+            # Get the RSA key
             cipher = PKCS1_OAEP.new(self.model.rsa)
+            # Decrypt the message and convert to utf-8
             message = cipher.decrypt(
                 base64.b64decode((incomingMessage["message"].encode("utf-8")))
             ).decode("utf-8")
+            # Get the user name
             username = incomingMessage["name"]
+            # Add the message to the list of messages
             self.list.insert(END, "\n" + username + ": " + message)
 
         self.list["state"] = "disabled"
 
+    # The GUI for a user room
     def Create_Room(self, window):
         self.Kill_UI()
         frame = Frame(window, bg="#191914", pady=15, padx=15)

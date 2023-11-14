@@ -20,7 +20,7 @@ class Host_API:
         @app.route("/newUser", methods=["POST"])
         # Checks and adds a new user to the room
         def New_User():
-            # Verify user
+            # Get the JSON from the request
             data = request.get_json()["data"]
 
             # Get the AES Key
@@ -71,6 +71,7 @@ class Host_API:
                 # Send the encrypted user info
                 response = request.post(user["ngrok"] + "/newUser", json=data)
 
+                # Error check
                 if response.status_code != 200:
                     print("ERROR SENDING NEW USER INFO TO CURRENT USERS")
 
@@ -92,27 +93,29 @@ class Host_API:
             return jsonify({"data": encrypted_res.decode("utf-8")})
 
         @app.route("/message", methods=["POST"])
-        # Sends a message to all users in the chat room
+        # Receives and sends a message to all users in the chat room
         # TODO: error when two users send a message at the same time
         def New_Message():
+            # Get the data out of the JSON
             data = request.get_json()
 
-            # Send message out to other users
+            # Loop though the messages that need to be sent
+            # TODO: when/if encoding JSON string means it will need to be decoded here, might be a problem
             for key, value in data["messages"].items():
-                # keep the host encrypted message for host
+                # Keep the host encrypted message for host
                 if key == self.model.username:
                     self.controller.Render_Message(
                         {"name": data["name"], "message": value}
                     )
                     continue
-                # Send message to user
 
+                # Send the other messages to the respective user
                 forwarded_data = {"name": data["name"], "message": value}
-
                 response = request.post(
                     self.model.users[key]["ngrok"] + "/newUser", json=forwarded_data
                 )
 
+                # Error check
                 if response.status_code != 200:
                     print("MESSAGE NOT SENT TO: " + self.model.users[key]["name"])
 
