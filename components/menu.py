@@ -17,7 +17,7 @@ class Menu:
         frame = Frame(self.window, bg="#191914", pady=20, padx=20)
         title = Label(
             frame,
-            text="Vault Talk",
+            text="Super Stealth Chat",
             fg="#5AFAF0",
             bg="#191914",
             font=("Lucida Sans", 40),
@@ -57,7 +57,7 @@ class Menu:
         frame = Frame(self.window, bg="#191914", pady=20, padx=20)
         title = Label(
             frame,
-            text="Vault Talk",
+            text="Super Stealth Chat",
             fg="#5AFAF0",
             bg="#191914",
             font=("Lucida Sans", 32),
@@ -110,7 +110,7 @@ class Menu:
         frame = Frame(self.window, bg="#191914", pady=20, padx=20)
         title = Label(
             frame,
-            text="Vault Talk",
+            text="Super Stealth Chat",
             fg="#5AFAF0",
             bg="#191914",
             font=("Lucida Sans", 32),

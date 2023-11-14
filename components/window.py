@@ -11,7 +11,7 @@ from components import menu
 
 def Create_Window():
     window = Tk()
-    window.title("Vault Talk")
+    window.title("Super Stealth Chat")
     window.configure(bg="#191914", pady=30)
     window.geometry("896x704")
     window.minsize(width=896, height=704)
