@@ -8,13 +8,25 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 import base64
 import json
-
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 class Room:
-    def __init__(self, window, user_ngrok_url, host_ngrok_url, room_key, username):
+    def __init__(self, window, user_ngrok_url, host_ngrok_url, room_password, username):
         self.window = window
 
-        # Get the AES key from what the user input
+        # Setup a SHA256 hash function
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(), # Using SHA256 algorithm
+            length=32, # Needs to be of length 32 to be a key
+            salt=b"", # Super secure salt, just for early version
+            iterations=480000, # Recomended number of iterations
+        )
+
+        # Use the hash funcation to make a room key
+        room_key = base64.urlsafe_b64encode(kdf.derive(bytes(room_password, 'utf-8')))
+
+        # Get the AES key the hash function
         aes = Fernet(room_key)
 
         # Generates a RSA key pair of 2048 bits long

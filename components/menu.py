@@ -57,6 +57,7 @@ class Menu:
     def Host_Menu(self):
         self.Kill_UI()
         self.username_var = StringVar()
+        self.room_password_var = StringVar()
         frame = Frame(self.window, bg="#191914", pady=20, padx=20)
         title = Label(
             frame,
@@ -85,6 +86,23 @@ class Menu:
             border=0,
             fg="#F2F2F2",
         )
+        room_password_label = Label(
+            login_div,
+            text="Password",
+            font=("Lucida Sans", 20),
+            bg="#191914",
+            fg="#F2F2F2",
+            pady=3,
+        )
+        room_password = Entry(
+            login_div,
+            textvariable=self.room_password_var,
+            width=50,
+            font=("Lucida Sans", 16),
+            bg="#24241E",
+            border=0,
+            fg="#F2F2F2",
+        )
         start_btn = Button(
             frame,
             text="Start",
@@ -95,11 +113,13 @@ class Menu:
             fg="#F2F2F2",
             activebackground="#191914",
             command=lambda: host_room.Room(
-                self.window, self.ngrok_url, self.username_var.get()
+                self.window, self.ngrok_url, self.username_var.get(), self.room_password_var.get()
             ),
         )
         username_label.pack()
         username.pack()
+        room_password_label.pack()
+        room_password.pack()
         title.pack()
         login_div.pack()
         start_btn.pack()

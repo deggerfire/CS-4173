@@ -6,16 +6,27 @@ import requests
 from cryptography.fernet import Fernet
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
+from cryptography.hazmat.primitives import hashes
+import base64
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import base64
 
 # The object with mainly the GUI components for a room host
 class Room:
-    def __init__(self, window, ngrok_url, username):
+    def __init__(self, window, ngrok_url, username, room_password):
         self.window = window
+        
+        # Setup a SHA256 hash function
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(), # Using SHA256 algorithm
+            length=32, # Needs to be of length 32 to be a key
+            salt=b"", # Super secure salt, just for early version
+            iterations=480000, # Recomended number of iterations
+        )
 
-        # TODO: make this based off of a user entered password
-        # Using the fernet libary gererate a room key
-        room_key = Fernet.generate_key()
+        # Use the hash funcation to make a room key
+        room_key = base64.urlsafe_b64encode(kdf.derive(bytes(room_password, 'utf-8')))
+
         # Generates a RSA key pair of 2048 bits long
         rsa = RSA.generate(2048)
 
