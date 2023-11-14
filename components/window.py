@@ -8,7 +8,7 @@ from components import menu
 # Green - #50FAB4
 # White - #F2F2F2
 
-
+# Creates the main window and does general formatting
 def Create_Window():
     window = Tk()
     window.title("Super Stealth Chat")
@@ -18,8 +18,9 @@ def Create_Window():
     window.iconphoto(True, icon := PhotoImage(file="components/imgs/icon.png"))
     return window
 
-
+# Calls all the setup functions (more or less init)
 def Start(ngrok_url):
     window = Create_Window()
+    # Create the menu
     menu.Menu(window, ngrok_url)
     return window

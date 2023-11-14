@@ -8,6 +8,7 @@ from Crypto.Cipher import PKCS1_OAEP
 app = Flask(__name__)
 
 
+# Handles the communication between machines
 class User_API:
     def __init__(self, model, controller):
         self.model = model
@@ -15,28 +16,40 @@ class User_API:
         self.Set_Routes()
         self.run()
 
+    # Where inbound messages come to
     def Set_Routes(self):
         @app.route("/newMessage", methods=["POST"])
+        # Handles when a new message shows up
         def newMessage():
+            # Get the json from the request
+            # TODO: string and encode the JSON
             data = request.get_json()
+            print("Encrypted Data: ")
+            print(data)
 
+            # Send the message to be rendered
             self.controller.Render_Message(
                 {"name": data["name"], "message": data["message"]}
             )
 
+            # Reply to the request
             return "Success"
 
         @app.route("/newUser", methods=["POST"])
+        # Handles a new user being added to the room
         def newUser():
+            # Get the data from JSON
+            # TODO: string and encode the JSON
             data = request.get_json()["data"]
-            print(data)
+            print(data)  # TODO: debug print
 
-            # Save new user
+            # Decode the message
             cipher = PKCS1_OAEP.new(self.model.rsa)
             new_user = json.loads(
                 cipher.decrypt(base64.b64decode((data.encode("utf-8")))).decode("utf-8")
             )
 
+            # Save new user
             self.model.Add_User(new_user["name"], new_user["public_key"])
 
             return "Success"
