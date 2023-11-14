@@ -14,15 +14,16 @@ class Room:
     def __init__(self, window, user_ngrok_url, host_ngrok_url, room_key, username):
         self.window = window
 
-        # AES setup
+        # Get the AES key from what the user input
         aes = Fernet(room_key)
 
-        # RSA setup
+        # Generates a RSA key pair of 2048 bits long
         rsa = RSA.generate(2048)
 
-        # RSA public (PEM encoded)
+        # Encode the generate RSA public key (PEM encoded)
         public_key = rsa.publickey().export_key().decode("utf-8")
 
+        # Build the JSON object that will be sent
         data = {
             "room_key": room_key,
             "username": username,
@@ -30,29 +31,40 @@ class Room:
             "public_key": public_key,
         }
 
+        # Convert the JSON to a string
         req_str = json.dumps(data)
 
+        # Encode the JSON
         encrypted_data = aes.encrypt(req_str.encode("utf-8"))
 
+        # Set the URL
         url = host_ngrok_url + "/newUser"
 
+        # Make a JSON object to hold the data
         data = {"data": encrypted_data.decode("utf-8")}
 
+        # Send and receive form the server
         response = requests.post(url, json=data)
 
+        # Error check
         if response.status_code != 200:
             return
 
+        # Convert what the server sent to JSON
+        # TODO: check for valid JSON
         res_json = response.json()
 
+        # Make sure this is data
         if res_json["data"] == ":(":
             return
 
+        # Decrypted the data inside of the returned JSON
         decrypted_data = json.loads(aes.decrypt(res_json["data"]).decode("utf-8"))
         print(decrypted_data)
 
+        # Make and store all of the users and their information
+        # TODO: error here when there is to many users
         users = []
-
         for key, value in decrypted_data.items():
             users.append({"name": key, "public_key": value})
 
