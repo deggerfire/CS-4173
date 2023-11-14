@@ -8,6 +8,7 @@ import json
 
 app = Flask(__name__)
 
+
 # The API for a host room which handles encoding and moving messages around
 class Host_API:
     def __init__(self, model, controller):
@@ -22,13 +23,15 @@ class Host_API:
         def New_User():
             # Get the JSON from the request
             data = request.get_json()["data"]
-
+            print("Encrypted Request Data: ")
+            print(data)
             # Get the AES Key
             aes = Fernet(self.model.room_key)
 
-            # Decrypted the inbound message and convert it to json 
+            # Decrypted the inbound message and convert it to json
             decrypted_data = json.loads(aes.decrypt(data).decode("utf-8"))
-            print(decrypted_data)# TODO: print out for debugging
+            print("Decrypted Request Data: ")
+            print(decrypted_data)  # TODO: print out for debugging
 
             # Check if the room_key in the inbound message is correct
             # TODO: issue when the inbound message is invalid (its not valid json)
@@ -47,7 +50,7 @@ class Host_API:
                 # Skip the host user
                 if user["name"] == decrypted_data["username"]:
                     continue
-                
+
                 # Get the new user info (name, public key)
                 user_info = {
                     "name": decrypted_data["username"],
@@ -98,6 +101,7 @@ class Host_API:
         def New_Message():
             # Get the data out of the JSON
             data = request.get_json()
+            print(data)
 
             # Loop though the messages that need to be sent
             # TODO: when/if encoding JSON string means it will need to be decoded here, might be a problem
