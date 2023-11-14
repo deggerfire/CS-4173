@@ -37,7 +37,7 @@ class Room:
 
         # Build the JSON object that will be sent
         data = {
-            "room_key": room_key,
+            "room_key": room_key.decode("utf-8"),
             "username": username,
             "ngrok_url": user_ngrok_url,
             "public_key": public_key,
