@@ -7,6 +7,7 @@ from Crypto.Cipher import PKCS1_OAEP
 
 app = Flask(__name__)
 
+
 # Handles the communication between machines
 class User_API:
     def __init__(self, model, controller):
@@ -23,6 +24,8 @@ class User_API:
             # Get the json from the request
             # TODO: string and encode the JSON
             data = request.get_json()
+            print("Encrypted Data: ")
+            print(data)
 
             # Send the message to be rendered
             self.controller.Render_Message(
@@ -38,7 +41,7 @@ class User_API:
             # Get the data from JSON
             # TODO: string and encode the JSON
             data = request.get_json()["data"]
-            print(data)# TODO: debug print
+            print(data)  # TODO: debug print
 
             # Decode the message
             cipher = PKCS1_OAEP.new(self.model.rsa)
