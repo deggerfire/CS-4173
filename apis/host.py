@@ -24,19 +24,18 @@ class Host_API:
             # Get the JSON from the request
             data = request.get_json()["data"]
             print("Encrypted Request Data: ")
-            print(data)
+            print(data)# TODO: print out for debugging
             # Get the AES Key
             aes = Fernet(self.model.room_key)
 
             # Decrypted the inbound message and convert it to json
-            decrypted_data = json.loads(aes.decrypt(data).decode("utf-8"))
-            print("Decrypted Request Data: ")
-            print(decrypted_data)  # TODO: print out for debugging
-
-            # Check if the room_key in the inbound message is correct
-            # TODO: issue when the inbound message is invalid (its not valid json)
-            if decrypted_data["room_key"] != self.model.room_key.decode("utf-8"):
+            try:
+                decrypted_data = json.loads(aes.decrypt(data).decode("utf-8"))
+            except:# If an error occurs then it is not a vaild user
                 return jsonify({"data": ":("})
+
+            print("Decrypted Request Data: ")
+            print(decrypted_data) # TODO: print out for debugging
 
             # Save the new users information
             self.model.Add_User(

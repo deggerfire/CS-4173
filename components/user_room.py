@@ -63,10 +63,10 @@ class Room:
             return
 
         # Convert what the server sent to JSON
-        # TODO: check for valid JSON (invaild means invaild user)
         res_json = response.json()
 
-        # Make sure this is data
+        # Check if we got into the room
+        # TODO: Make this more funcationable
         if res_json["data"] == ":(":
             return
 
