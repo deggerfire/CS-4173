@@ -14,7 +14,6 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 class Room:
     def __init__(self, window, user_ngrok_url, host_ngrok_url, room_password, username):
         self.window = window
-
         # Setup a SHA256 hash function
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(), # Using SHA256 algorithm
