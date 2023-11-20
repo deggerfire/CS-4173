@@ -12,8 +12,14 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 class Room:
-    def __init__(self, window, user_ngrok_url, host_ngrok_url, room_password, username):
+    def __init__(self, window, user_ngrok_url, host_ngrok_url, room_password, username, message_label):
         self.window = window
+
+        # Check that a username, password and URL were entered
+        if username == "" or room_password == "" or host_ngrok_url == "":
+            message_label.config(text = "Failed to join room")
+            return
+        
         # Setup a SHA256 hash function
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(), # Using SHA256 algorithm
@@ -54,19 +60,24 @@ class Room:
         # Make a JSON object to hold the data
         data = {"data": encrypted_data.decode("utf-8")}
 
-        # Send and receive form the server
-        response = requests.post(url, json=data)
+        try:
+            # Send and receive form the server
+            response = requests.post(url, json=data)
+        except:
+            message_label.config(text = "Failed to join room")
 
         # Error check
         if response.status_code != 200:
+            message_label.config(text = "Failed to join room")
             return
 
         # Convert what the server sent to JSON
         res_json = response.json()
 
         # Check if we got into the room
-        # TODO: Make this more funcationable
+        # TODO: Make this more funcationable !test!
         if res_json["data"] == ":(":
+            message_label.config(text = "Failed to join room")
             return
 
         # Decrypted the data inside of the returned JSON

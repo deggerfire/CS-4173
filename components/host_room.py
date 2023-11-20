@@ -13,9 +13,15 @@ import base64
 
 # The object with mainly the GUI components for a room host
 class Room:
-    def __init__(self, window, ngrok_url, username, room_password):
+    def __init__(self, window, ngrok_url, username, room_password, message_label):
         self.window = window
-        
+
+        # Check that a username and password was entered
+        # TODO: make min requirments for the password
+        if username == "" or room_password == "":
+            message_label.config(text = "Failed to make room")
+            return
+
         # Setup a SHA256 hash function
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(), # Using SHA256 algorithm
