@@ -63,12 +63,12 @@ class Room:
             # Encode the message using each chatters public key
             public_key = RSA.import_key(user["public_key"])
             cipher = PKCS1_OAEP.new(public_key)
-            message = base64.b64encode(cipher.encrypt(message.encode("utf-8"))).decode(
+            eMessage = base64.b64encode(cipher.encrypt(message.encode("utf-8"))).decode(
                 "utf-8"
             )
 
             # Put the data in a JSON
-            data = {"name": self.model.username, "message": message}
+            data = {"name": self.model.username, "message": eMessage}
             print(data)# TODO: debug print
 
             # Send the message to the respective user

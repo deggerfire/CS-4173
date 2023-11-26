@@ -5,9 +5,9 @@ from Crypto.PublicKey import RSA
 import base64
 import requests
 import json
+import apis.RSA_handler as RSA_handler
 
 app = Flask(__name__)
-
 
 # The API for a host room which handles encoding and moving messages around
 class Host_API:
@@ -37,6 +37,7 @@ class Host_API:
             print("Decrypted Request Data: ")
             print(decrypted_data) # TODO: print out for debugging
 
+            # TODO: Error check if two users have the same name
             # Save the new users information
             self.model.Add_User(
                 decrypted_data["username"],
@@ -60,18 +61,15 @@ class Host_API:
                 user_info_str = json.dumps(user_info)
 
                 # Get and load the public key
-                public_key = RSA.import_key(user["public_key"])
-                cipher = PKCS1_OAEP.new(public_key)
+                #public_key = RSA.import_key(user["public_key"])
+                #cipher = PKCS1_OAEP.new(public_key)
 
                 # Encrypt the data
                 data = {
-                    "data": base64.b64encode(
-                        cipher.encrypt(user_info_str.encode("utf-8"))
-                    ).decode("utf-8")
+                    "data": RSA_handler.encode(user_info_str.encode("utf-8"), RSA.import_key(user["public_key"]))
                 }
-
                 # Send the encrypted user info
-                response = request.post(user["ngrok"] + "/newUser", json=data)
+                response = requests.post(user["ngrok"] + "/newUser", json=data)
 
                 # Error check
                 if response.status_code != 200:
@@ -91,7 +89,6 @@ class Host_API:
 
             # Encrypt the message
             encrypted_res = aes.encrypt(json.dumps(data).encode("utf-8"))
-
             return jsonify({"data": encrypted_res.decode("utf-8")})
 
         @app.route("/message", methods=["POST"])
@@ -114,7 +111,7 @@ class Host_API:
 
                 # Send the other messages to the respective user
                 forwarded_data = {"name": data["name"], "message": value}
-                response = request.post(
+                response = requests.post(
                     self.model.users[key]["ngrok"] + "/newUser", json=forwarded_data
                 )
 

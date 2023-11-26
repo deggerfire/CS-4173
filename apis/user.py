@@ -4,9 +4,13 @@ import requests
 import json
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
+import apis.RSA_handler as RSA_handler
 
 app = Flask(__name__)
 
+# Splits a string into length num chars (should be 256)
+def chunkstring(string, length):
+    return (string[0+i:length+i] for i in range(0, len(string), length))
 
 # Handles the communication between machines
 class User_API:
@@ -44,11 +48,9 @@ class User_API:
             print(data)  # TODO: debug print
 
             # Decode the message
-            cipher = PKCS1_OAEP.new(self.model.rsa)
-            new_user = json.loads(
-                cipher.decrypt(base64.b64decode((data.encode("utf-8")))).decode("utf-8")
-            )
-
+            #cipher = PKCS1_OAEP.new(self.model.rsa)
+            new_user = json.loads(RSA_handler.decode(data, self.model.rsa))
+            
             # Save new user
             self.model.Add_User(new_user["name"], new_user["public_key"])
 
