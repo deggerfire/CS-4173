@@ -69,11 +69,10 @@ class Room:
 
             # Put the data in a JSON
             data = {"name": self.model.username, "message": eMessage}
-            print(data)# TODO: debug print
 
             # Send the message to the respective user
             url = user["ngrok"] + "/newMessage"
-            print(url)# TODO: debug print
+            print(url)
             response = requests.post(url, json=data)
 
             # Error check

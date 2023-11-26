@@ -82,16 +82,13 @@ class Room:
 
         # Decrypted the data inside of the returned JSON
         decrypted_data = json.loads(aes.decrypt(res_json["data"]).decode("utf-8"))
-        print(decrypted_data)
 
         # Make and store all of the users and their information
-        # TODO: error when there is to many users
         users = []
         for key, value in decrypted_data.items():
             users.append({"name": key, "public_key": value})
 
         # Makes the user_room object used to keep track of users (the user_room in models)
-        # TODO: rename user_room in models, bit confusing when reading
         self.model = user_room.User_Room(
             user_ngrok_url, host_ngrok_url, username, users, rsa
         )
@@ -126,7 +123,6 @@ class Room:
         # Put the message in JSON
         # TODO: string and encode the JSON
         data = {"name": self.model.username, "messages": messages}
-        print(data)# TODO: debug print
 
         # Sent the message to the host who sends it to everyone
         url = self.model.host_ngrok_url + "/message"
@@ -147,7 +143,6 @@ class Room:
             self.list.insert(END, "\n" + "You: " + message)
 
         else:
-            print(incomingMessage)# TODO: debug print
             # Get the RSA key
             cipher = PKCS1_OAEP.new(self.model.rsa)
             # Decrypt the message and convert to utf-8

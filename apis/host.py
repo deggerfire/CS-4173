@@ -23,8 +23,6 @@ class Host_API:
         def New_User():
             # Get the JSON from the request
             data = request.get_json()["data"]
-            print("Encrypted Request Data: ")
-            print(data)# TODO: print out for debugging
             # Get the AES Key
             aes = Fernet(self.model.room_key)
 
@@ -33,9 +31,6 @@ class Host_API:
                 decrypted_data = json.loads(aes.decrypt(data).decode("utf-8"))
             except:# If an error occurs then it is not a vaild user
                 return jsonify({"data": ":("})
-
-            print("Decrypted Request Data: ")
-            print(decrypted_data) # TODO: print out for debugging
 
             # TODO: Error check if two users have the same name
             # Save the new users information
@@ -97,13 +92,12 @@ class Host_API:
         def New_Message():
             # Get the data out of the JSON
             data = request.get_json()
-            print(data)
 
             # Loop though the messages that need to be sent
             # TODO: when/if encoding JSON string means it will need to be decoded here, might be a problem
-            for key, value in data["messages"].items():
+            for uname, value in data["messages"].items():
                 # Keep the host encrypted message for host
-                if key == self.model.username:
+                if uname == self.model.username:
                     self.controller.Render_Message(
                         {"name": data["name"], "message": value}
                     )
@@ -111,13 +105,14 @@ class Host_API:
 
                 # Send the other messages to the respective user
                 forwarded_data = {"name": data["name"], "message": value}
-                response = requests.post(
-                    self.model.users[key]["ngrok"] + "/newUser", json=forwarded_data
-                )
+                for user in self.model.users:
+                    if user["name"] == uname:
+                        url = user["ngrok"] + "/newMessage"
+                        response = requests.post(url, json=forwarded_data)
 
-                # Error check
-                if response.status_code != 200:
-                    print("MESSAGE NOT SENT TO: " + self.model.users[key]["name"])
+                        # Error check
+                        if response.status_code != 200:
+                            print("MESSAGE NOT SENT TO: " + uname)
 
             return "Success"
 

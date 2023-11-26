@@ -26,10 +26,7 @@ class User_API:
         # Handles when a new message shows up
         def newMessage():
             # Get the json from the request
-            # TODO: string and encode the JSON
             data = request.get_json()
-            print("Encrypted Data: ")
-            print(data)
 
             # Send the message to be rendered
             self.controller.Render_Message(
@@ -43,14 +40,12 @@ class User_API:
         # Handles a new user being added to the room
         def newUser():
             # Get the data from JSON
-            # TODO: string and encode the JSON
             data = request.get_json()["data"]
-            print(data)  # TODO: debug print
 
             # Decode the message
             #cipher = PKCS1_OAEP.new(self.model.rsa)
             new_user = json.loads(RSA_handler.decode(data, self.model.rsa))
-            
+
             # Save new user
             self.model.Add_User(new_user["name"], new_user["public_key"])
 
