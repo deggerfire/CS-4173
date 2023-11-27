@@ -1,21 +1,25 @@
 # CS-4173
 
-## Setup
-### Install Libaries (these comands are for anaconda)
+# Run program
 
-#### pyngrok
+## 1st way, command line
+
+### Setup
+#### Install Libaries (these comands are for anaconda)
+
+##### pyngrok
 
 ```
 conda install -c conda-forge pyngrok
 ```
 
-#### Flask
+##### Flask
 
 ```
 conda install -c conda-forge Flask
 ```
 
-#### Crypto
+##### Crypto
 
 ```
 conda install -c anaconda pycryptodome
@@ -23,12 +27,12 @@ conda install -c anaconda pycryptodome
 conda install -c anaconda cryptography
 ```
 
-#### Requests
+##### Requests
 
 ```
 conda install -c anaconda requests
 ```
-## Runing
+### Runing
 
 navigate to the folder with main.py
 
