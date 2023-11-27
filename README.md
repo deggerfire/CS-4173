@@ -40,3 +40,6 @@ run the command
 ```
 python main.py
 ```
+## 2nd way, Run exe
+
+Run the chat.exe in the main file
