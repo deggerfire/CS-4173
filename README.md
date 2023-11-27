@@ -1,20 +1,21 @@
 # CS-4173
 
-## Libaries
+## Setup
+### Install Libaries (these comands are for anaconda)
 
-### pyngrok
+#### pyngrok
 
 ```
 conda install -c conda-forge pyngrok
 ```
 
-### Flask
+#### Flask
 
 ```
 conda install -c conda-forge Flask
 ```
 
-### Crypto
+#### Crypto
 
 ```
 conda install -c anaconda pycryptodome
@@ -22,7 +23,7 @@ conda install -c anaconda pycryptodome
 conda install -c anaconda cryptography
 ```
 
-### Requests
+#### Requests
 
 ```
 conda install -c anaconda requests
