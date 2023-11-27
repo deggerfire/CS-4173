@@ -28,3 +28,11 @@ conda install -c anaconda cryptography
 ```
 conda install -c anaconda requests
 ```
+## Runing
+
+navigate to the folder with main.py
+
+run the command
+```
+python main.py
+```
