@@ -138,10 +138,10 @@ class Room:
             public_key = RSA.import_key(user["public_key"])
             cipher = PKCS1_OAEP.new(public_key)
 
-            data = {"data": img_bytes}
+            files = {"image": ("image_name.jpg", img_bytes, "image/jpeg")}
 
             url = user["ngrok"] + "/newImage"
-            response = requests.post(url, json=data)
+            response = requests.post(url, files=files)
 
             if response.status_code != 200:
                 print("FAILED TO SEND IMAGE TO: " + user["name"])
