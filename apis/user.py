@@ -57,7 +57,7 @@ class User_API:
         def newImage():
             data = request.get_json()
 
-            self.controller.Upload_Image(data["image"])
+            self.controller.Upload_Image(data)
 
     def run(self):
         app.run(debug=True, port=5173, use_reloader=False)

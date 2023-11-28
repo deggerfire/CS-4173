@@ -138,7 +138,7 @@ class Room:
             public_key = RSA.import_key(user["public_key"])
             cipher = PKCS1_OAEP.new(public_key)
 
-            data = {"data": {"image_name.jpg", img_bytes, "image/jpeg"}}
+            data = {"data": img_bytes}
 
             url = user["ngrok"] + "/newImage"
             response = requests.post(url, json=data)
