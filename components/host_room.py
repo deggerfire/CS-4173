@@ -106,18 +106,27 @@ class Room:
 
         self.list["state"] = "disabled"
 
-    def Upload_Image(self):
-        file_path = filedialog.askopenfilename()
-        print(file_path)
-        image = Image.open(file_path).resize((200, 200))
-        photo = ImageTk.PhotoImage(image)
+    def Upload_Image(self, incomingImage):
+        if incomingImage == None:
+            file_path = filedialog.askopenfilename()
+            print(file_path)
+            image = Image.open(file_path).resize((200, 200))
+            photo = ImageTk.PhotoImage(image)
 
-        label = Label(
-            self.images_frame, image=photo, height=100, width=100, bg="#191914"
-        )
-        label.image = photo
-        label.pack()
-        self.Send_Image(file_path)
+            label = Label(
+                self.images_frame, image=photo, height=100, width=100, bg="#191914"
+            )
+            label.image = photo
+            label.pack()
+            self.Upload_Image(file_path)
+        else:
+            image = Image.open(io.BytesIO(incomingImage.img_bytes))
+            photo = ImageTk.PhotoImage(image)
+            label = Label(
+                self.images_frame, image=photo, height=100, width=100, bg="#191914"
+            )
+            label.image = photo
+            label.pack()
 
     def Send_Image(self, file_path):
         with Image.open(file_path) as img:
