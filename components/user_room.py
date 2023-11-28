@@ -1,5 +1,8 @@
 from tkinter import *
 import threading
+from tkinter import filedialog
+import io
+from PIL import Image, ImageTk
 from apis import user
 from models import user_room
 import requests
@@ -11,25 +14,34 @@ import json
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
+
 class Room:
-    def __init__(self, window, user_ngrok_url, host_ngrok_url, room_password, username, message_label):
+    def __init__(
+        self,
+        window,
+        user_ngrok_url,
+        host_ngrok_url,
+        room_password,
+        username,
+        message_label,
+    ):
         self.window = window
 
         # Check that a username, password and URL were entered
         if username == "" or room_password == "" or host_ngrok_url == "":
-            message_label.config(text = "Failed to join room")
+            message_label.config(text="Failed to join room")
             return
-        
+
         # Setup a SHA256 hash function
         kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(), # Using SHA256 algorithm
-            length=32, # Needs to be of length 32 to be a key
-            salt=b"", # Super secure salt, just for early version
-            iterations=480000, # Recomended number of iterations
+            algorithm=hashes.SHA256(),  # Using SHA256 algorithm
+            length=32,  # Needs to be of length 32 to be a key
+            salt=b"",  # Super secure salt, just for early version
+            iterations=480000,  # Recomended number of iterations
         )
 
         # Use the hash funcation to make a room key
-        room_key = base64.urlsafe_b64encode(kdf.derive(bytes(room_password, 'utf-8')))
+        room_key = base64.urlsafe_b64encode(kdf.derive(bytes(room_password, "utf-8")))
 
         # Get the AES key the hash function
         aes = Fernet(room_key)
@@ -64,11 +76,11 @@ class Room:
             # Send and receive form the server
             response = requests.post(url, json=data)
         except:
-            message_label.config(text = "Failed to join room")
+            message_label.config(text="Failed to join room")
 
         # Error check
         if response.status_code != 200:
-            message_label.config(text = "Failed to join room")
+            message_label.config(text="Failed to join room")
             return
 
         # Convert what the server sent to JSON
@@ -77,7 +89,7 @@ class Room:
         # Check if we got into the room
         # TODO: Make this more funcationable !test!
         if res_json["data"] == ":(":
-            message_label.config(text = "Failed to join room")
+            message_label.config(text="Failed to join room")
             return
 
         # Decrypted the data inside of the returned JSON
@@ -156,6 +168,28 @@ class Room:
 
         self.list["state"] = "disabled"
 
+    def Upload_Image(self, incomingImage):
+        if incomingImage == None:
+            file_path = filedialog.askopenfilename()
+            print(file_path)
+            image = Image.open(file_path).resize((200, 200))
+            photo = ImageTk.PhotoImage(image)
+
+            label = Label(
+                self.images_frame, image=photo, height=100, width=100, bg="#191914"
+            )
+            label.image = photo
+            label.pack()
+            self.Upload_Image(file_path)
+        else:
+            image = Image.open(io.BytesIO(incomingImage.img_bytes))
+            photo = ImageTk.PhotoImage(image)
+            label = Label(
+                self.images_frame, image=photo, height=100, width=100, bg="#191914"
+            )
+            label.image = photo
+            label.pack()
+
     # The GUI for a user room
     def Create_Room(self, window):
         self.Kill_UI()
@@ -171,8 +205,16 @@ class Room:
         )
         title.pack()
 
-        list_frame = Frame(frame)
-        list_frame.pack(fill=BOTH, expand=1)
+        chat_frame = Frame(frame)
+        images_frame = Frame(chat_frame)
+
+        list_frame = Frame(chat_frame)
+        list_frame.pack(fill=BOTH, side=LEFT, expand=1)
+
+        images_frame.pack(side=RIGHT)
+        self.images_frame = images_frame
+
+        chat_frame.pack(fill=BOTH)
 
         scrollbar = Scrollbar(list_frame)
         scrollbar.pack(side=RIGHT, fill=Y)
@@ -202,9 +244,25 @@ class Room:
         )
         self.input = text
         text.pack()
+        btns_frame = Frame(frame)
+
+        upload = Button(
+            btns_frame,
+            text="Upload Image",
+            fg="#191914",
+            bg="#5AFAF0",
+            font=("Lucida Sans", 20),
+            activeforeground="#5AFAF0",
+            activebackground="#24241E",
+            height=70,
+            border=1,
+            relief="solid",
+            command=lambda: self.Upload_Image(),
+        )
+        upload.pack(side=LEFT)
 
         send = Button(
-            frame,
+            btns_frame,
             text="Send",
             fg="#191914",
             bg="#5AFAF0",
@@ -216,6 +274,7 @@ class Room:
             relief="solid",
             command=lambda: self.Render_Message(None),
         )
-        send.pack(fill="x")
+        send.pack(side=RIGHT, fill="x")
+        btns_frame.pack()
 
         frame.pack()

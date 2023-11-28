@@ -8,9 +8,11 @@ import apis.RSA_handler as RSA_handler
 
 app = Flask(__name__)
 
+
 # Splits a string into length num chars (should be 256)
 def chunkstring(string, length):
-    return (string[0+i:length+i] for i in range(0, len(string), length))
+    return (string[0 + i : length + i] for i in range(0, len(string), length))
+
 
 # Handles the communication between machines
 class User_API:
@@ -43,13 +45,19 @@ class User_API:
             data = request.get_json()["data"]
 
             # Decode the message
-            #cipher = PKCS1_OAEP.new(self.model.rsa)
+            # cipher = PKCS1_OAEP.new(self.model.rsa)
             new_user = json.loads(RSA_handler.decode(data, self.model.rsa))
 
             # Save new user
             self.model.Add_User(new_user["name"], new_user["public_key"])
 
             return "Success"
+
+        @app.route("/newImage", methods=["POST"])
+        def newImage():
+            data = request.get_json()
+
+            self.controller.Render_Image(data["image"])
 
     def run(self):
         app.run(debug=True, port=5173, use_reloader=False)

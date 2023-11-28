@@ -1,4 +1,7 @@
 from tkinter import *
+from tkinter import filedialog
+from PIL import Image, ImageTk
+import io
 import threading
 from apis import host
 from models import host_room
@@ -9,7 +12,8 @@ from Crypto.Cipher import PKCS1_OAEP
 from cryptography.hazmat.primitives import hashes
 import base64
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-import base64
+import apis.RSA_handler as RSA_handler
+
 
 # The object with mainly the GUI components for a room host
 class Room:
@@ -19,19 +23,19 @@ class Room:
         # Check that a username and password was entered
         # TODO: make min requirments for the password
         if username == "" or room_password == "":
-            message_label.config(text = "Failed to make room")
+            message_label.config(text="Failed to make room")
             return
 
         # Setup a SHA256 hash function
         kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(), # Using SHA256 algorithm
-            length=32, # Needs to be of length 32 to be a key
-            salt=b"", # Super secure salt, just for early version
-            iterations=480000, # Recomended number of iterations
+            algorithm=hashes.SHA256(),  # Using SHA256 algorithm
+            length=32,  # Needs to be of length 32 to be a key
+            salt=b"",  # Super secure salt, just for early version
+            iterations=480000,  # Recomended number of iterations
         )
 
         # Use the hash funcation to make a room key
-        room_key = base64.urlsafe_b64encode(kdf.derive(bytes(room_password, 'utf-8')))
+        room_key = base64.urlsafe_b64encode(kdf.derive(bytes(room_password, "utf-8")))
 
         # Generates a RSA key pair of 2048 bits long
         rsa = RSA.generate(2048)
@@ -102,6 +106,37 @@ class Room:
 
         self.list["state"] = "disabled"
 
+    def Upload_Image(self):
+        file_path = filedialog.askopenfilename()
+        print(file_path)
+        image = Image.open(file_path).resize((200, 200))
+        photo = ImageTk.PhotoImage(image)
+
+        label = Label(
+            self.images_frame, image=photo, height=100, width=100, bg="#191914"
+        )
+        label.image = photo
+        label.pack()
+        self.Send_Image(file_path)
+
+    def Send_Image(self, file_path):
+        with Image.open(file_path) as img:
+            img_byte_arr = io.BytesIO()
+            img.save(img_byte_arr, format=img.format)
+            img_bytes = img_byte_arr.getvalue()
+
+        for user in self.model.users:
+            public_key = RSA.import_key(user["public_key"])
+            cipher = PKCS1_OAEP.new(public_key)
+
+            data = {"data": {"image_name.jpg", img_bytes, "image/jpeg"}}
+
+            url = user["ngrok"] + "/newImage"
+            response = requests.post(url, json=data)
+
+            if response.status_code != 200:
+                print("FAILED TO SEND IMAGE TO: " + user["name"])
+
     # Setups the GUI for being in a chat room as a host
     # TODO: some double coding between this and the one in user_room (comp)
     def Create_Room(self, window, ngrok_url, room_key):
@@ -146,8 +181,17 @@ class Room:
         )
         title.pack()
 
-        list_frame = Frame(frame)
-        list_frame.pack(fill=BOTH, expand=1)
+        chat_frame = Frame(frame)
+
+        images_frame = Frame(chat_frame)
+
+        list_frame = Frame(chat_frame)
+        list_frame.pack(fill=BOTH, side=LEFT, expand=1)
+
+        images_frame.pack(side=RIGHT)
+        self.images_frame = images_frame
+
+        chat_frame.pack(fill=BOTH)
 
         scrollbar = Scrollbar(list_frame)
         scrollbar.pack(side=RIGHT, fill=Y)
@@ -178,8 +222,25 @@ class Room:
         self.input = text
         text.pack()
 
+        btns_frame = Frame(frame)
+
+        upload = Button(
+            btns_frame,
+            text="Upload Image",
+            fg="#191914",
+            bg="#5AFAF0",
+            font=("Lucida Sans", 20),
+            activeforeground="#5AFAF0",
+            activebackground="#24241E",
+            height=70,
+            border=1,
+            relief="solid",
+            command=lambda: self.Upload_Image(),
+        )
+        upload.pack(side=LEFT)
+
         send = Button(
-            frame,
+            btns_frame,
             text="Send",
             fg="#191914",
             bg="#5AFAF0",
@@ -191,6 +252,7 @@ class Room:
             relief="solid",
             command=lambda: self.Render_Message(None),
         )
-        send.pack(fill="x")
+        send.pack(side=RIGHT, fill=X)
+        btns_frame.pack()
 
         frame.pack()
