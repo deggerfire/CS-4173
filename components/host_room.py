@@ -13,6 +13,7 @@ from cryptography.hazmat.primitives import hashes
 import base64
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import apis.RSA_handler as RSA_handler
+import json
 
 
 # The object with mainly the GUI components for a room host
@@ -120,7 +121,7 @@ class Room:
             label.pack()
             self.Send_Image(file_path)
         else:
-            image = Image.open(io.BytesIO(incomingImage.img_bytes))
+            image = Image.open(io.BytesIO(incomingImage.img_image))
             photo = ImageTk.PhotoImage(image)
             label = Label(
                 self.images_frame, image=photo, height=100, width=100, bg="#191914"
@@ -138,10 +139,12 @@ class Room:
             public_key = RSA.import_key(user["public_key"])
             cipher = PKCS1_OAEP.new(public_key)
 
-            files = {"image": ("image_name.jpg", img_bytes, "image/jpeg")}
+            encoded_image = base64.b64encode(img_bytes).decode("utf-8")
+
+            data = json.dumps({"image": encoded_image})
 
             url = user["ngrok"] + "/newImage"
-            response = requests.post(url, files=files)
+            response = requests.post(url, json=data)
 
             if response.status_code != 200:
                 print("FAILED TO SEND IMAGE TO: " + user["name"])

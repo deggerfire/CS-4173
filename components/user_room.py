@@ -182,7 +182,7 @@ class Room:
             label.pack()
             self.Upload_Image(file_path)
         else:
-            image = Image.open(io.BytesIO(incomingImage.img_bytes))
+            image = Image.open(io.BytesIO(incomingImage.image))
             photo = ImageTk.PhotoImage(image)
             label = Label(
                 self.images_frame, image=photo, height=100, width=100, bg="#191914"

@@ -56,6 +56,7 @@ class User_API:
         @app.route("/newImage", methods=["POST"])
         def newImage():
             data = request.get_json()
+            data = json.loads(data)
 
             self.controller.Upload_Image(data)
 
