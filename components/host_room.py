@@ -118,7 +118,7 @@ class Room:
             )
             label.image = photo
             label.pack()
-            self.Upload_Image(file_path)
+            self.Send_Image(file_path)
         else:
             image = Image.open(io.BytesIO(incomingImage.img_bytes))
             photo = ImageTk.PhotoImage(image)
@@ -244,7 +244,7 @@ class Room:
             height=70,
             border=1,
             relief="solid",
-            command=lambda: self.Upload_Image(),
+            command=lambda: self.Upload_Image(None),
         )
         upload.pack(side=LEFT)
 
