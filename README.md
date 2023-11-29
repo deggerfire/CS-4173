@@ -32,7 +32,7 @@ conda install -c anaconda requests
 conda install -c anaconda pillow
 ```
 
-### Step 2: Run the program
+## Step 2: Run the program
 
 navigate to the folder with main.py and run the command:
 ```
