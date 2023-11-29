@@ -141,7 +141,7 @@ class Room:
             data = json.dumps(
                 {
                     "image": RSA_handler.encode(
-                        encoded_image.encode("utf-8"),
+                        encoded_image,
                         RSA.import_key(user["public_key"]),
                     ),
                     "uname": self.model.username,
