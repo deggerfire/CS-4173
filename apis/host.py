@@ -120,7 +120,7 @@ class Host_API:
 
             return "Success"
 
-        @app.route("/image", methoods=["POST"])
+        @app.route("/image", methods=["POST"])
         def New_Image():
             data = request.get_json()
 
