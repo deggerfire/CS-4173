@@ -20,8 +20,9 @@ Pillow - Used to send images
 
 ### Way 1: Import SSC_anaconda_setup.yaml into anaconda
 
-### Way 2: Libary install commands
+### Way 2: Run the install commands for libaries
 
+commnds for anaconda:
 ```
 conda install -c conda-forge pyngrok
 conda install -c conda-forge Flask
