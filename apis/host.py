@@ -9,6 +9,7 @@ import apis.RSA_handler as RSA_handler
 
 app = Flask(__name__)
 
+
 # The API for a host room which handles encoding and moving messages around
 class Host_API:
     def __init__(self, model, controller):
@@ -29,7 +30,7 @@ class Host_API:
             # Decrypted the inbound message and convert it to json
             try:
                 decrypted_data = json.loads(aes.decrypt(data).decode("utf-8"))
-            except:# If an error occurs then it is not a vaild user
+            except:  # If an error occurs then it is not a vaild user
                 return jsonify({"data": ":("})
 
             # TODO: Error check if two users have the same name
@@ -56,12 +57,15 @@ class Host_API:
                 user_info_str = json.dumps(user_info)
 
                 # Get and load the public key
-                #public_key = RSA.import_key(user["public_key"])
-                #cipher = PKCS1_OAEP.new(public_key)
+                # public_key = RSA.import_key(user["public_key"])
+                # cipher = PKCS1_OAEP.new(public_key)
 
                 # Encrypt the data
                 data = {
-                    "data": RSA_handler.encode(user_info_str.encode("utf-8"), RSA.import_key(user["public_key"]))
+                    "data": RSA_handler.encode(
+                        user_info_str.encode("utf-8"),
+                        RSA.import_key(user["public_key"]),
+                    )
                 }
                 # Send the encrypted user info
                 response = requests.post(user["ngrok"] + "/newUser", json=data)
@@ -108,6 +112,34 @@ class Host_API:
                 for user in self.model.users:
                     if user["name"] == uname:
                         url = user["ngrok"] + "/newMessage"
+                        response = requests.post(url, json=forwarded_data)
+
+                        # Error check
+                        if response.status_code != 200:
+                            print("MESSAGE NOT SENT TO: " + uname)
+
+            return "Success"
+
+        @app.route("/image", methods=["POST"])
+        def New_Image():
+            data = request.get_json()
+
+            for uname, value in data["images"].items():
+                # Keep the host encrypted message for host
+                if uname == self.model.username:
+                    self.controller.Upload_Image(
+                        {
+                            "uname": data["uname"],
+                            "image": RSA_handler.decode(value, self.model.rsa),
+                        }
+                    )
+                    continue
+
+                # Send the other messages to the respective user
+                forwarded_data = {"uname": data["uname"], "image": value}
+                for user in self.model.users:
+                    if user["name"] == uname:
+                        url = user["ngrok"] + "/newImage"
                         response = requests.post(url, json=forwarded_data)
 
                         # Error check
