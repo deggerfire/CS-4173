@@ -1,6 +1,6 @@
 # Super Stealth Chat
 
-# Running program
+## Running program
 
 ### Setup
 #### Libaries used
@@ -33,7 +33,7 @@ navigate to the folder with main.py and run the command:
 python main.py
 ```
 
-# Useage
+## Useage
 
 ## Start a room
 
