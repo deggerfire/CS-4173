@@ -127,7 +127,7 @@ class Host_API:
             for uname, value in data["images"].items():
                 # Keep the host encrypted message for host
                 if uname == self.model.username:
-                    self.controller.Render_Image({"name": data["name"], "image": value})
+                    self.controller.Upload_Image({"name": data["name"], "image": value})
                     continue
 
                 # Send the other messages to the respective user
