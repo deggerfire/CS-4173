@@ -2,10 +2,8 @@
 
 # Running program
 
-## 1st way, command line
-
 ### Setup
-#### Install Libaries (these comands are for anaconda)
+#### Install Libaries (these commands are for anaconda)
 
 ##### pyngrok
 
@@ -32,6 +30,13 @@ conda install -c anaconda cryptography
 ```
 conda install -c anaconda requests
 ```
+
+#### Pillow
+
+```
+conda install -c anaconda pillow
+```
+
 ### Runing
 
 navigate to the folder with main.py
@@ -40,9 +45,6 @@ run the command
 ```
 python main.py
 ```
-## 2nd way, Run exe
-
-Run the chat.exe in the main file
 
 # Useage
 

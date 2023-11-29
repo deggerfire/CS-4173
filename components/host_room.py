@@ -189,10 +189,6 @@ class Room:
             height=1,
             border=0,
         )
-        key.insert(
-            END,
-            "Room Key: " + room_key.decode("utf-8"),
-        )
         key["state"] = "disabled"
         key.pack()
         url = Text(
