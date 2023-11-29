@@ -200,7 +200,7 @@ class Room:
 
             name = Label(
                 image_frame,
-                text=incomingImage["name"],
+                text=incomingImage["uname"],
                 fg="#F1F1F1",
                 bg="#191914",
             )
