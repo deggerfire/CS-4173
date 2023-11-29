@@ -3,6 +3,9 @@
 ## Running program
 
 ### Installed libaries
+
+Note: Anaconda is used to manage libraries
+
 #### Libaries used
 
 pyngrok - Used for commucation over the internet
