@@ -3,45 +3,28 @@
 # Running program
 
 ### Setup
-#### Install Libaries (these commands are for anaconda)
+#### Libaries used
 
-##### pyngrok
+pyngrok
+Flask
+Crypto
+Requests
+Pillow
+
+#### Libary install commands (these commands are for anaconda)
 
 ```
 conda install -c conda-forge pyngrok
-```
-
-##### Flask
-
-```
 conda install -c conda-forge Flask
-```
-
-##### Crypto
-
-```
 conda install -c anaconda pycryptodome
-
 conda install -c anaconda cryptography
-```
-
-##### Requests
-
-```
 conda install -c anaconda requests
-```
-
-#### Pillow
-
-```
 conda install -c anaconda pillow
 ```
 
 ### Runing
 
-navigate to the folder with main.py
-
-run the command
+navigate to the folder with main.py and run the command:
 ```
 python main.py
 ```
@@ -50,7 +33,7 @@ python main.py
 
 ## Start a room
 
-Have the computer which will be the host start the program and select the host room option and enter a username and password. Safely have the password handed out to all users that will join the room. On the top of the host screen there is a room url, this needs to be sent to all users that are to be in the room, this can be done insecurely.
+Have the computer which will be the host start the program and select the host room option and enter a username and password. Safely have the password handed out to all users that will join the room **(!Room security is depended on this password remaining secure!)**. After the room is open on the top of the host screen there is a room url, this needs to be sent to all users that are to be in the room, this can be done insecurely.
 
 ## Join a room
 
