@@ -138,15 +138,13 @@ class Room:
         for user in self.model.users:
             encoded_image = base64.b64encode(img_bytes).decode("utf-8")
 
-            data = json.dumps(
-                {
-                    "image": RSA_handler.encode(
-                        encoded_image.encode("utf-8"),
-                        RSA.import_key(user["public_key"]),
-                    ),
-                    "uname": self.model.username,
-                }
-            )
+            data = {
+                "image": RSA_handler.encode(
+                    encoded_image.encode("utf-8"),
+                    RSA.import_key(user["public_key"]),
+                ),
+                "uname": self.model.username,
+            }
 
             url = user["ngrok"] + "/newImage"
             response = requests.post(url, json=data)
