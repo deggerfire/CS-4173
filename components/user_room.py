@@ -173,23 +173,48 @@ class Room:
         if incomingImage == None:
             file_path = filedialog.askopenfilename()
             print(file_path)
-            image = Image.open(file_path).resize((200, 200))
+            image = Image.open(file_path).resize((300, 300))
             photo = ImageTk.PhotoImage(image)
 
+            image_frame = Frame(self.images_frame, bg="#191914")
+
+            name = Label(
+                image_frame,
+                text="You",
+                fg="#F1F1F1",
+                bg="#191914",
+            )
+            name.pack()
             label = Label(
                 self.images_frame, image=photo, height=100, width=100, bg="#191914"
             )
             label.image = photo
             label.pack()
+            image_frame.pack()
             self.Send_Image(file_path)
         else:
             image = Image.open(io.BytesIO(base64.b64decode(incomingImage["image"])))
             photo = ImageTk.PhotoImage(image)
+
+            image_frame = Frame(self.images_frame, bg="#191914")
+
+            name = Label(
+                image_frame,
+                text=incomingImage["name"],
+                fg="#F1F1F1",
+                bg="#191914",
+            )
             label = Label(
-                self.images_frame, image=photo, height=100, width=100, bg="#191914"
+                image_frame,
+                image=photo,
+                height=100,
+                width=100,
+                bg="#191914",
             )
             label.image = photo
             label.pack()
+            name.pack()
+            image_frame.pack()
 
     def Send_Image(self, file_path):
         with Image.open(file_path) as img:
@@ -231,8 +256,8 @@ class Room:
         )
         title.pack()
 
-        chat_frame = Frame(frame)
-        images_frame = Frame(chat_frame)
+        chat_frame = Frame(frame, bg="#191914")
+        images_frame = Frame(chat_frame, bg="#191914")
 
         list_frame = Frame(chat_frame)
         list_frame.pack(fill=BOTH, side=LEFT, expand=1)

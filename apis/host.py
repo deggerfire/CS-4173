@@ -129,14 +129,14 @@ class Host_API:
                 if uname == self.model.username:
                     self.controller.Upload_Image(
                         {
-                            "name": data["uname"],
+                            "uname": data["uname"],
                             "image": RSA_handler.decode(value, self.model.rsa),
                         }
                     )
                     continue
 
                 # Send the other messages to the respective user
-                forwarded_data = {"name": data["name"], "image": value}
+                forwarded_data = {"uname": data["uname"], "image": value}
                 for user in self.model.users:
                     if user["name"] == uname:
                         url = user["ngrok"] + "/newImage"

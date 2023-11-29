@@ -58,7 +58,7 @@ class User_API:
             data = request.get_json()
             image = RSA_handler.decode(data["image"], self.model.rsa)
 
-            self.controller.Upload_Image({"image": image})
+            self.controller.Upload_Image({"image": image, "name": data["name"]})
 
             return "Success"
 
