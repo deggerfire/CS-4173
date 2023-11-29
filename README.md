@@ -4,7 +4,7 @@
 
 ### Installed libaries
 
-Note: Anaconda is used to manage libraries
+Note: Anaconda was used to manage libraries, so setup instructions are for anaconda
 
 #### Libaries used
 
@@ -20,7 +20,7 @@ Pillow - Used to send images
 
 #### Way 1: Import SSC_anaconda_setup.yaml into anaconda
 
-#### Way 2: Libary install commands (these commands are for anaconda)
+#### Way 2: Libary install commands
 
 ```
 conda install -c conda-forge pyngrok
