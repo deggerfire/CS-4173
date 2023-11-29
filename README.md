@@ -2,7 +2,7 @@
 
 ## Running program
 
-### Installed libaries
+### Step 1: Install libaries
 
 Note: Anaconda was used to manage libraries, so setup instructions are for anaconda
 
@@ -31,7 +31,7 @@ conda install -c anaconda requests
 conda install -c anaconda pillow
 ```
 
-### Runing
+### Step 2: Run the program
 
 navigate to the folder with main.py and run the command:
 ```
