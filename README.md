@@ -1,15 +1,19 @@
-# CS-4173
+# Super Stealth Chat
 
-# Running program
+## Running program
 
 ### Setup
 #### Libaries used
 
-pyngrok
-Flask
-Crypto
-Requests
-Pillow
+pyngrok - Used for commucation over the internet
+
+Flask - Used for commucation over the internet
+
+Crypto - Used for encrypting and decrypting messages
+
+Requests - Used for commucation over the internet
+
+Pillow - Used to send images
 
 #### Libary install commands (these commands are for anaconda)
 
@@ -29,7 +33,7 @@ navigate to the folder with main.py and run the command:
 python main.py
 ```
 
-# Useage
+## Useage
 
 ## Start a room
 
