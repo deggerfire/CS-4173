@@ -60,5 +60,7 @@ class User_API:
 
             self.controller.Upload_Image({"image": image})
 
+            return "Success"
+
     def run(self):
         app.run(debug=True, port=5173, use_reloader=False)

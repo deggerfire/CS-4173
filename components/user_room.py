@@ -206,7 +206,7 @@ class Room:
                 encoded_image.encode("utf-8"), RSA.import_key(user["public_key"])
             )
 
-            images[user["name"]]
+            images[user["name"]] = data
 
         data = {"uname": self.model.username, "images": images}
 
@@ -283,7 +283,7 @@ class Room:
             height=70,
             border=1,
             relief="solid",
-            command=lambda: self.Upload_Image(),
+            command=lambda: self.Upload_Image(None),
         )
         upload.pack(side=LEFT)
 
