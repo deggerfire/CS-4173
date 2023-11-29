@@ -5,11 +5,15 @@
 ### Setup
 #### Libaries used
 
-pyngrok
-Flask
-Crypto
-Requests
-Pillow
+pyngrok - Used for commucation over the internet
+
+Flask - Used for commucation over the internet
+
+Crypto - Used for encrypting and decrypting messages
+
+Requests - Used for commucation over the internet
+
+Pillow - Used to send images
 
 #### Libary install commands (these commands are for anaconda)
 
