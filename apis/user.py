@@ -56,9 +56,9 @@ class User_API:
         @app.route("/newImage", methods=["POST"])
         def newImage():
             data = request.get_json()
-            data = json.loads(data)
+            image = json.loads(RSA_handler.decode(data["image"], self.model.rsa))
 
-            self.controller.Upload_Image(data)
+            self.controller.Upload_Image({"image": image})
 
     def run(self):
         app.run(debug=True, port=5173, use_reloader=False)
