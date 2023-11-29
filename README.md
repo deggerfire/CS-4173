@@ -1,4 +1,4 @@
-# CS-4173
+# Super Stealth Chat
 
 # Running program
 
