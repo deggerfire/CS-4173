@@ -14,7 +14,9 @@ Crypto - Used for encrypting and decrypting messages
 Requests - Used for commucation over the internet
 
 Pillow - Used to send images
+
 #### Way 1: Import SSC_anaconda_setup.yaml into anaconda
+
 #### Way 2: Libary install commands (these commands are for anaconda)
 
 ```
