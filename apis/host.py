@@ -128,7 +128,10 @@ class Host_API:
                 # Keep the host encrypted message for host
                 if uname == self.model.username:
                     self.controller.Upload_Image(
-                        {"name": data["uname"], "image": value}
+                        {
+                            "name": data["uname"],
+                            "image": RSA_handler.decode(value, self.model.rsa),
+                        }
                     )
                     continue
 
