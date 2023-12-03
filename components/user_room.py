@@ -63,7 +63,7 @@ class Room:
 
         # Convert the JSON to a string
         req_str = json.dumps(data)
-
+        print(req_str)
         # Encode the JSON
         encrypted_data = aes.encrypt(req_str.encode("utf-8"))
 
