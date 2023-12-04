@@ -13,7 +13,7 @@ def Create_Window():
     window = Tk()
     window.title("Super Stealth Chat")
     window.configure(bg="#191914", pady=30)
-    window.geometry("896x704")
+    window.geometry("1300x704")
     window.minsize(width=896, height=704)
     window.iconphoto(True, icon := PhotoImage(file="components/imgs/icon.png"))
     return window

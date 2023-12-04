@@ -15,7 +15,7 @@ class Menu:
 
     # The GUI for selecting being a user or a host
     def User_Type(self):
-        self.Kill_UI
+        self.Kill_UI()
         frame = Frame(self.window, bg="#191914", pady=20, padx=20)
         title = Label(
             frame,
@@ -103,6 +103,14 @@ class Menu:
             border=0,
             fg="#F2F2F2",
         )
+        message_label = Label(
+            login_div,
+            text="",
+            font=("Lucida Sans", 20),
+            bg="#191914",
+            fg="#F20000",
+            pady=3,
+        )
         start_btn = Button(
             frame,
             text="Start",
@@ -113,8 +121,19 @@ class Menu:
             fg="#F2F2F2",
             activebackground="#191914",
             command=lambda: host_room.Room(
-                self.window, self.ngrok_url, self.username_var.get(), self.room_password_var.get()
+                self.window, self.ngrok_url, self.username_var.get(), self.room_password_var.get(), message_label
             ),
+        )
+        back_btn = Button(
+            frame,
+            text="Back",
+            border=0,
+            font=("Lucida Sans", 20),
+            bg="#191914",
+            activeforeground="#50FAB4",
+            fg="#F2F2F2",
+            activebackground="#191914",
+            command=lambda: self.User_Type(),
         )
         username_label.pack()
         username.pack()
@@ -122,7 +141,9 @@ class Menu:
         room_password.pack()
         title.pack()
         login_div.pack()
+        message_label.pack()
         start_btn.pack()
+        back_btn.pack()
         frame.pack()
 
     # The GUI for joining a chat room
@@ -196,6 +217,14 @@ class Menu:
             border=0,
             fg="#F2F2F2",
         )
+        message_label = Label(
+            login_div,
+            text="",
+            font=("Lucida Sans", 20),
+            bg="#191914",
+            fg="#F20000",
+            pady=3,
+        )
         login_btn = Button(
             frame,
             text="Enter",
@@ -211,7 +240,19 @@ class Menu:
                 self.host_ngrok_url_var.get(),
                 self.room_key_var.get(),
                 self.username_var.get(),
+                message_label,
             ),
+        )
+        back_btn = Button(
+            frame,
+            text="Back",
+            border=0,
+            font=("Lucida Sans", 20),
+            bg="#191914",
+            activeforeground="#50FAB4",
+            fg="#F2F2F2",
+            activebackground="#191914",
+            command=lambda: self.User_Type(),
         )
         username_label.pack()
         username.pack()
@@ -222,4 +263,6 @@ class Menu:
         title.pack()
         login_div.pack()
         login_btn.pack()
+        back_btn.pack()
+        message_label.pack()
         frame.pack()

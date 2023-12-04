@@ -5,6 +5,7 @@ from Crypto.PublicKey import RSA
 import base64
 import requests
 import json
+import apis.RSA_handler as RSA_handler
 
 app = Flask(__name__)
 
@@ -23,21 +24,16 @@ class Host_API:
         def New_User():
             # Get the JSON from the request
             data = request.get_json()["data"]
-            print("Encrypted Request Data: ")
-            print(data)
             # Get the AES Key
             aes = Fernet(self.model.room_key)
 
             # Decrypted the inbound message and convert it to json
-            decrypted_data = json.loads(aes.decrypt(data).decode("utf-8"))
-            print("Decrypted Request Data: ")
-            print(decrypted_data)  # TODO: print out for debugging
-
-            # Check if the room_key in the inbound message is correct
-            # TODO: issue when the inbound message is invalid (its not valid json)
-            if decrypted_data["room_key"] != self.model.room_key.decode("utf-8"):
+            try:
+                decrypted_data = json.loads(aes.decrypt(data).decode("utf-8"))
+            except:  # If an error occurs then it is not a vaild user
                 return jsonify({"data": ":("})
 
+            # TODO: Error check if two users have the same name
             # Save the new users information
             self.model.Add_User(
                 decrypted_data["username"],
@@ -61,18 +57,18 @@ class Host_API:
                 user_info_str = json.dumps(user_info)
 
                 # Get and load the public key
-                public_key = RSA.import_key(user["public_key"])
-                cipher = PKCS1_OAEP.new(public_key)
+                # public_key = RSA.import_key(user["public_key"])
+                # cipher = PKCS1_OAEP.new(public_key)
 
                 # Encrypt the data
                 data = {
-                    "data": base64.b64encode(
-                        cipher.encrypt(user_info_str.encode("utf-8"))
-                    ).decode("utf-8")
+                    "data": RSA_handler.encode(
+                        user_info_str.encode("utf-8"),
+                        RSA.import_key(user["public_key"]),
+                    )
                 }
-
                 # Send the encrypted user info
-                response = request.post(user["ngrok"] + "/newUser", json=data)
+                response = requests.post(user["ngrok"] + "/newUser", json=data)
 
                 # Error check
                 if response.status_code != 200:
@@ -92,7 +88,6 @@ class Host_API:
 
             # Encrypt the message
             encrypted_res = aes.encrypt(json.dumps(data).encode("utf-8"))
-
             return jsonify({"data": encrypted_res.decode("utf-8")})
 
         @app.route("/message", methods=["POST"])
@@ -101,13 +96,12 @@ class Host_API:
         def New_Message():
             # Get the data out of the JSON
             data = request.get_json()
-            print(data)
 
             # Loop though the messages that need to be sent
             # TODO: when/if encoding JSON string means it will need to be decoded here, might be a problem
-            for key, value in data["messages"].items():
+            for uname, value in data["messages"].items():
                 # Keep the host encrypted message for host
-                if key == self.model.username:
+                if uname == self.model.username:
                     self.controller.Render_Message(
                         {"name": data["name"], "message": value}
                     )
@@ -115,13 +109,42 @@ class Host_API:
 
                 # Send the other messages to the respective user
                 forwarded_data = {"name": data["name"], "message": value}
-                response = request.post(
-                    self.model.users[key]["ngrok"] + "/newUser", json=forwarded_data
-                )
+                for user in self.model.users:
+                    if user["name"] == uname:
+                        url = user["ngrok"] + "/newMessage"
+                        response = requests.post(url, json=forwarded_data)
 
-                # Error check
-                if response.status_code != 200:
-                    print("MESSAGE NOT SENT TO: " + self.model.users[key]["name"])
+                        # Error check
+                        if response.status_code != 200:
+                            print("MESSAGE NOT SENT TO: " + uname)
+
+            return "Success"
+
+        @app.route("/image", methods=["POST"])
+        def New_Image():
+            data = request.get_json()
+
+            for uname, value in data["images"].items():
+                # Keep the host encrypted message for host
+                if uname == self.model.username:
+                    self.controller.Upload_Image(
+                        {
+                            "uname": data["uname"],
+                            "image": RSA_handler.decode(value, self.model.rsa),
+                        }
+                    )
+                    continue
+
+                # Send the other messages to the respective user
+                forwarded_data = {"uname": data["uname"], "image": value}
+                for user in self.model.users:
+                    if user["name"] == uname:
+                        url = user["ngrok"] + "/newImage"
+                        response = requests.post(url, json=forwarded_data)
+
+                        # Error check
+                        if response.status_code != 200:
+                            print("MESSAGE NOT SENT TO: " + uname)
 
             return "Success"
 

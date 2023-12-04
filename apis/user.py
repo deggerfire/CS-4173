@@ -4,8 +4,14 @@ import requests
 import json
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
+import apis.RSA_handler as RSA_handler
 
 app = Flask(__name__)
+
+
+# Splits a string into length num chars (should be 256)
+def chunkstring(string, length):
+    return (string[0 + i : length + i] for i in range(0, len(string), length))
 
 
 # Handles the communication between machines
@@ -22,10 +28,7 @@ class User_API:
         # Handles when a new message shows up
         def newMessage():
             # Get the json from the request
-            # TODO: string and encode the JSON
             data = request.get_json()
-            print("Encrypted Data: ")
-            print(data)
 
             # Send the message to be rendered
             self.controller.Render_Message(
@@ -39,18 +42,23 @@ class User_API:
         # Handles a new user being added to the room
         def newUser():
             # Get the data from JSON
-            # TODO: string and encode the JSON
             data = request.get_json()["data"]
-            print(data)  # TODO: debug print
 
             # Decode the message
-            cipher = PKCS1_OAEP.new(self.model.rsa)
-            new_user = json.loads(
-                cipher.decrypt(base64.b64decode((data.encode("utf-8")))).decode("utf-8")
-            )
+            # cipher = PKCS1_OAEP.new(self.model.rsa)
+            new_user = json.loads(RSA_handler.decode(data, self.model.rsa))
 
             # Save new user
             self.model.Add_User(new_user["name"], new_user["public_key"])
+
+            return "Success"
+
+        @app.route("/newImage", methods=["POST"])
+        def newImage():
+            data = request.get_json()
+            image = RSA_handler.decode(data["image"], self.model.rsa)
+
+            self.controller.Upload_Image({"image": image, "uname": data["uname"]})
 
             return "Success"
 
