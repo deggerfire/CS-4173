@@ -1,5 +1,7 @@
 # Super Stealth Chat
 
+Github link: https://github.com/deggerfire/CS-4173/tree/main
+
 # How to run program
 
 ## Step 1: Install libaries
